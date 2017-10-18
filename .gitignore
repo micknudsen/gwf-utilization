@@ -104,3 +104,6 @@ ENV/
 ._*
 
 debug
+
+# Weird nfs files
+.nfs*
