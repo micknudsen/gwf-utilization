@@ -10,5 +10,6 @@ from gwf.exceptions import GWFError
 @click.pass_obj
 def utilization(obj):
     # This plugin only works for SlurmBackend
-    if not issubclass(backend_from_config(obj), SlurmBackend):
+    backend_cls = backend_from_config(obj)
+    if not issubclass(backend_cls, SlurmBackend):
         raise GWFError('Utilization plugin only works for Slurm backend!')
