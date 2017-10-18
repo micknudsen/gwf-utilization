@@ -6,6 +6,9 @@ from gwf.backends import backend_from_config
 from gwf.backends.slurm import SlurmBackend, _call_generic
 
 
+def call_sacct(job_ids):
+   return _call_generic('sacct', '--noheader', '--long', '--parsable2', '--allocations', '--jobs', ','.join(job_ids))
+
 @click.command()
 @click.pass_obj
 def utilization(obj):
@@ -17,5 +20,5 @@ def utilization(obj):
     graph = graph_from_config(obj)
 
     with backend_cls() as backend:
-        for target in graph.targets.values():
-            job_id = backend.get_job_id(target)
+        job_ids = [backend.get_job_id(target) for target in graph.targets.values()]
+        print(call_sacct(job_ids))
