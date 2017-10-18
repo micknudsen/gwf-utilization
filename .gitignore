@@ -107,3 +107,6 @@ debug
 
 # Weird nfs files
 .nfs*
+
+# gwf
+.gwfconf.json
