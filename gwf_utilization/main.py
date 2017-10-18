@@ -3,11 +3,9 @@ import click
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
 from gwf.backends import backend_from_config
-from gwf.backends.slurm import SlurmBackend, _call_generic
+from gwf.backends.slurm import SlurmBackend
 
-
-def call_sacct(job_ids):
-   return _call_generic('sacct', '--noheader', '--long', '--parsable2', '--allocations', '--jobs', ','.join(job_ids))
+from gwf_utilization.accounting import call_sacct
 
 @click.command()
 @click.pass_obj
