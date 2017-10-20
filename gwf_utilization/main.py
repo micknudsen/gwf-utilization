@@ -8,6 +8,7 @@ from gwf.backends.slurm import SlurmBackend
 
 from gwf_utilization.accounting import call_sacct
 
+
 @click.command()
 @click.argument('targets', nargs=-1)
 @click.pass_obj
@@ -18,6 +19,9 @@ def utilization(obj, targets):
         raise GWFError('Utilization plugin only works for Slurm backend!')
 
     graph = graph_from_config(obj)
+
+    # If user specified list of targets, only report utilization for these.
+    # Otherwise, report utilization for all targets.
     matches = graph.targets.values()
     if targets:
         matches = filter_names(matches, targets)
