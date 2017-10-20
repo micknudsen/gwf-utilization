@@ -26,6 +26,5 @@ def utilization(obj, targets):
     if targets:
         matches = filter_names(matches, targets)
 
-    # Generate utilization report from Slurm job ids.
     with backend_cls() as backend:
-        report_generator = Accountant(job_ids=[backend.get_job_id(target) for target in matches])
+        accountant = Accountant(job_ids=[backend.get_job_id(target) for target in matches])
