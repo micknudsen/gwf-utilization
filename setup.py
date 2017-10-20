@@ -10,6 +10,10 @@ setup(
 
     install_requires=['click',
                       'gwf>=1.1',
-                      'pandas']
+                      'pandas'],
+
+    author='Michael Knudsen',
+    author_email='michaelk@clin.au.dk',
+    license='MIT'
 
 )
