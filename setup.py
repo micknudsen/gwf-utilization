@@ -9,8 +9,7 @@ setup(
     entry_points = {'gwf.plugins': ['utilization = gwf_utilization.main:utilization']},
 
     install_requires=['click',
-                      'gwf>=1.1',
-                      'pandas'],
+                      'gwf>=1.1'],
 
     author='Michael Knudsen',
     author_email='michaelk@clin.au.dk',
