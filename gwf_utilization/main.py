@@ -6,7 +6,7 @@ from gwf.filtering import filter_names
 from gwf.backends import backend_from_config
 from gwf.backends.slurm import SlurmBackend
 
-from gwf_utilization.accounting import ReportGenerator
+from gwf_utilization.accounting import Accountant
 
 
 @click.command()
@@ -28,4 +28,4 @@ def utilization(obj, targets):
 
     # Generate utilization report from Slurm job ids.
     with backend_cls() as backend:
-        report_generator = ReportGenerator(job_ids=[backend.get_job_id(target) for target in matches])
+        report_generator = Accountant(job_ids=[backend.get_job_id(target) for target in matches])
