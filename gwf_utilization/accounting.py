@@ -24,7 +24,7 @@ class Accountant:
 
     def __init__(self, job_ids):
 
-        selected_output = ['JobID', 'JobName']
+        selected_output = ['JobID', 'JobName', 'CPUTime', 'Timelimit']
 
         sacct_output = _call_generic('sacct', '--format=' + ','.join(selected_output), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
         columns, *data = [line.split('|') for line in sacct_output.splitlines()]
