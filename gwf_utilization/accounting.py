@@ -28,3 +28,9 @@ class Accountant:
 
         sacct_output = _call_generic('sacct', '--format=' + ','.join(selected_output), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
         columns, *data = [line.split('|') for line in sacct_output.splitlines()]
+
+
+class Job:
+
+    def __init__(self):
+        pass
