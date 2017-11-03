@@ -34,16 +34,20 @@ class Accountant:
         # Hopefully sacct outputs the right columns in the right order.
         assert sacct_columns == columns
 
-        self.jobs = [Job(columns=columns, data=data) for data in sacct_data]
+        self.jobs = []
+
+        for data in sacct_data:
+
+            data_dict = dict(zip(columns, data))
+
+            self.jobs.append(Job(job_id=data_dict['JobID'],
+                                 job_name=data_dict['JobName'],
+                                 n_cpus=data_dict['NCPUS'],
+                                 cpu_time=data_dict['CPUTime'],
+                                 time_limit=data_dict['Timelimit']))
 
 
 class Job:
 
-    def __init__(self, columns, data):
-        # Store data in dictionary
-        self.data = dict(zip(columns, data))
-
-    def time_performance(self):
-        used_time = seconds(self.data['CPUTime'])
-        reserved_time = seconds(self.data['Timelimit']) * int(self.data['NCPUS'])
-        return used_time / reserved_time
+    def __init__(self, job_id, job_name, n_cpus, cpu_time, time_limit):
+        pass
