@@ -24,13 +24,21 @@ class Accountant:
 
     def __init__(self, job_ids):
 
+        # Request these outputs from sacct.
         columns = ['JobID', 'JobName', 'CPUTime', 'Timelimit']
 
+        # Run sacct and parse output.
         sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
-        data = [line.split('|') for line in sacct_output.splitlines()[1:]]
+        sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
+
+        # Hopefully sacct output the right columns in the right order.
+        assert sacct_columns == columns
+
+        self.jobs = [Job(columns=columns, data=data) for data in sacct_data]
 
 
 class Job:
 
-    def __init__(self):
-        pass
+    def __init__(self, columns, data):
+        # Store data in dictionary
+        self.data = dict(zip(columns, data))
