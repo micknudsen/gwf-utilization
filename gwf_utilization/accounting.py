@@ -25,7 +25,7 @@ class Accountant:
     def __init__(self, job_ids):
 
         # Request these outputs from sacct.
-        columns = ['JobID', 'JobName', 'CPUTime', 'Timelimit']
+        columns = ['JobID', 'JobName', 'NCPUS', 'CPUTime', 'Timelimit']
 
         # Run sacct and parse output.
         sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
