@@ -42,3 +42,8 @@ class Job:
     def __init__(self, columns, data):
         # Store data in dictionary
         self.data = dict(zip(columns, data))
+
+    def time_performance(self):
+        used_time = seconds(self.data['CPUTime'])
+        reserved_time = seconds(self.data['Timelimit']) * int(self.data['NCPUS'])
+        return used_time / reserved_time
