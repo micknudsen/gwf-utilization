@@ -1,7 +1,5 @@
 import re
 
-from gwf.backends.slurm import _call_generic
-
 
 def seconds(time_string):
     '''Converts time string on the form DD-HH:MM:SS to seconds'''
@@ -22,23 +20,13 @@ def seconds(time_string):
 
 class Accountant:
 
-    def __init__(self, job_ids):
-
-        # Request these outputs from sacct.
-        columns = ['JobID', 'JobName', 'NCPUS', 'CPUTime', 'Timelimit']
-
-        # Run sacct and parse output.
-        sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
-        sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-
-        # Hopefully sacct outputs the right columns in the right order.
-        assert sacct_columns == columns
+    def __init__(self, sacct_columns, sacct_data):
 
         self.jobs = []
 
         for data in sacct_data:
 
-            data_dict = dict(zip(columns, data))
+            data_dict = dict(zip(sacct_columns, data))
 
             self.jobs.append(Job(job_id=data_dict['JobID'],
                                  job_name=data_dict['JobName'],

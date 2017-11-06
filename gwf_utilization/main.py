@@ -4,7 +4,7 @@ from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
 from gwf.backends import backend_from_config
-from gwf.backends.slurm import SlurmBackend
+from gwf.backends.slurm import SlurmBackend, _call_generic
 
 from gwf_utilization.accounting import Accountant
 
@@ -27,4 +27,16 @@ def utilization(obj, targets):
         matches = filter_names(matches, targets)
 
     with backend_cls() as backend:
-        accountant = Accountant(job_ids=[backend.get_job_id(target) for target in matches])
+        job_ids=[backend.get_job_id(target) for target in matches]
+
+    # Request these outputs from sacct.
+    columns = ['JobID', 'JobName', 'NCPUS', 'CPUTime', 'Timelimit']
+
+    # Run sacct and parse output.
+    sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
+    sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
+
+    # Hopefully sacct outputs the right columns in the right order.
+    assert sacct_columns == columns
+
+    accountant = Accountant(sacct_columns=sacct_columns, sacct_data=sacct_data)
