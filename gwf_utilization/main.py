@@ -36,7 +36,4 @@ def utilization(obj, targets):
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
     sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
 
-    # Hopefully sacct outputs the right columns in the right order.
-    assert sacct_columns == columns
-
     accountant = Accountant(sacct_columns=sacct_columns, sacct_data=sacct_data)
