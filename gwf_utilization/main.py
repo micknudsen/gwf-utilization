@@ -34,6 +34,5 @@ def utilization(obj, targets):
 
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
-    sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
 
-    accountant = Accountant(sacct_columns=sacct_columns, sacct_data=sacct_data)
+    accountant = Accountant.from_sacct_output(sacct_output)
