@@ -27,7 +27,7 @@ def utilization(obj, targets):
         matches = filter_names(matches, targets)
 
     with backend_cls() as backend:
-        job_ids=[backend.get_job_id(target) for target in matches]
+        job_ids = [backend.get_job_id(target) for target in matches]
 
     # Request these outputs from sacct.
     columns = ['JobID', 'JobName', 'State', 'NCPUS', 'CPUTime', 'Timelimit']

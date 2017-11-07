@@ -1,9 +1,9 @@
 import re
 
-
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
+
 
 class Accountant:
 
@@ -12,7 +12,7 @@ class Accountant:
 
     @classmethod
     def from_sacct_output(cls, sacct_output):
-        sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
+        sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
         return cls(jobs=[dict(zip(sacct_columns, entry)) for entry in sacct_data])
 
     @staticmethod
