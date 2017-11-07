@@ -1,6 +1,10 @@
 import re
 
 
+SECONDS_PER_MINUTE = 60
+SECONDS_PER_HOUR = 3600
+SECONDS_PER_DAY = 86400
+
 class Accountant:
 
     def __init__(self, jobs):
@@ -19,10 +23,10 @@ class Accountant:
         days, hours, minutes, seconds = re.match(time_regexp, time_string).groups()
 
         result = int(seconds)
-        result += 60 * int(minutes)
-        result += 3600 * int(hours)
+        result += SECONDS_PER_MINUTE * int(minutes)
+        result += SECONDS_PER_HOUR * int(hours)
 
         if days:
-            result += 86400 * int(days)
+            result += SECONDS_PER_DAY * int(days)
 
         return result
