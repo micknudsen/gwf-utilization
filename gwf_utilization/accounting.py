@@ -25,25 +25,5 @@ class Accountant:
 
     @classmethod
     def from_sacct_output(cls, sacct_output):
-
         sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-
-        jobs = []
-        for data in sacct_data:
-
-            data_dict = dict(zip(sacct_columns, data))
-
-            jobs.append(Job(job_id=data_dict['JobID'],
-                            job_name=data_dict['JobName'],
-                            state=data_dict['State'],
-                            n_cpus=data_dict['NCPUS'],
-                            cpu_time=data_dict['CPUTime'],
-                            time_limit=data_dict['Timelimit']))
-
-        return cls(jobs=jobs)
-
-
-class Job:
-
-    def __init__(self, job_id, job_name, state, n_cpus, cpu_time, time_limit):
-        pass
+        return cls(jobs=[dict(zip(sacct_columns, data)) for data in sacct_data])
