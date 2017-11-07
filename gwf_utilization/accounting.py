@@ -26,4 +26,4 @@ class Accountant:
     @classmethod
     def from_sacct_output(cls, sacct_output):
         sacct_columns ,*sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-        return cls(jobs=[dict(zip(sacct_columns, data)) for data in sacct_data])
+        return cls(jobs=[dict(zip(sacct_columns, entry)) for entry in sacct_data])
