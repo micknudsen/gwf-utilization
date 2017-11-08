@@ -18,12 +18,22 @@ class Accountant:
 
 class Job:
 
-    def __init__(self, name):
+    def __init__(self, slurm_id, name, state, cpus, cpu_time, wall_time):
+        self.slurm_id = slurm_id
         self.name = name
+        self.state = state
+        self.cpus = cpus
+        self.cpu_time = cpu_time
+        self.wall_time = wall_time
 
     @classmethod
     def from_sacct_data_dict(cls, sacct_data_dict):
-        return cls(name=sacct_data_dict['JobName'])
+        return cls(slurm_id=sacct_data_dict['JobID'],
+                   name=sacct_data_dict['JobName'],
+                   state=sacct_data_dict['State'],
+                   cpus=sacct_data_dict['NCPUS'],
+                   cpu_time=sacct_data_dict['CPUTime'],
+                   wall_time=sacct_data_dict['Timelimit'])
 
     @staticmethod
     def seconds(time_string):
