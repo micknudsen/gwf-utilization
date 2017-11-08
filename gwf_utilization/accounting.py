@@ -39,8 +39,8 @@ class Job:
         self.name = name
         self.state = state
         self.cpus = cpus
-        self.cpu_time = cpu_time
-        self.wall_time = wall_time
+        self._cpu_time = cpu_time
+        self._wall_time = wall_time
 
     @classmethod
     def from_sacct_data_dict(cls, sacct_data_dict):
@@ -50,3 +50,9 @@ class Job:
                    cpus=sacct_data_dict['NCPUS'],
                    cpu_time=sacct_data_dict['CPUTime'],
                    wall_time=sacct_data_dict['Timelimit'])
+
+    def cpu_time(self, raw=False):
+        return seconds(self._cpu_time) if raw else self._cpu_time
+
+    def wall_time(self, raw=False):
+        return seconds(self._wall_time) if raw else self._cpu_time
