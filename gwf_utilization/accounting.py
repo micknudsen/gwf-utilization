@@ -30,3 +30,9 @@ class Accountant:
             result += SECONDS_PER_DAY * int(days)
 
         return result
+
+
+class Job:
+
+    def __init__(self):
+        pass
