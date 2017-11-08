@@ -13,13 +13,17 @@ class Accountant:
     @classmethod
     def from_sacct_output(cls, sacct_output):
         sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-        return cls(jobs=[dict(zip(sacct_columns, entry)) for entry in sacct_data])
+        return cls(jobs=[Job.from_sacct_data_dict(dict(zip(sacct_columns, entry))) for entry in sacct_data])
 
 
 class Job:
 
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        self.name = name
+
+    @classmethod
+    def from_sacct_data_dict(cls, sacct_data_dict):
+        return cls(name=sacct_data_dict['JobName'])
 
     @staticmethod
     def seconds(time_string):
