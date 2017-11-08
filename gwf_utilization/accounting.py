@@ -15,6 +15,12 @@ class Accountant:
         sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
         return cls(jobs=[dict(zip(sacct_columns, entry)) for entry in sacct_data])
 
+
+class Job:
+
+    def __init__(self):
+        pass
+
     @staticmethod
     def seconds(time_string):
         '''Converts time string on the form DD-HH:MM:SS to seconds'''
@@ -30,9 +36,3 @@ class Accountant:
             result += SECONDS_PER_DAY * int(days)
 
         return result
-
-
-class Job:
-
-    def __init__(self):
-        pass
