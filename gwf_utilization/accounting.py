@@ -5,6 +5,22 @@ SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
 
 
+def seconds(time_string):
+    '''Converts time string on the form DD-HH:MM:SS to seconds'''
+
+    time_regexp = r'(?:([0-9]+)-)?([0-9]{2}):([0-9]{2}):([0-9]{2})'
+    days, hours, minutes, seconds = re.match(time_regexp, time_string).groups()
+
+    result = int(seconds)
+    result += SECONDS_PER_MINUTE * int(minutes)
+    result += SECONDS_PER_HOUR * int(hours)
+
+    if days:
+        result += SECONDS_PER_DAY * int(days)
+
+    return result
+
+
 class Accountant:
 
     def __init__(self, jobs):
@@ -34,19 +50,3 @@ class Job:
                    cpus=sacct_data_dict['NCPUS'],
                    cpu_time=sacct_data_dict['CPUTime'],
                    wall_time=sacct_data_dict['Timelimit'])
-
-    @staticmethod
-    def seconds(time_string):
-        '''Converts time string on the form DD-HH:MM:SS to seconds'''
-
-        time_regexp = r'(?:([0-9]+)-)?([0-9]{2}):([0-9]{2}):([0-9]{2})'
-        days, hours, minutes, seconds = re.match(time_regexp, time_string).groups()
-
-        result = int(seconds)
-        result += SECONDS_PER_MINUTE * int(minutes)
-        result += SECONDS_PER_HOUR * int(hours)
-
-        if days:
-            result += SECONDS_PER_DAY * int(days)
-
-        return result
