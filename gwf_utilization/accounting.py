@@ -47,7 +47,7 @@ class Job:
         return cls(slurm_id=sacct_data_dict['JobID'],
                    name=sacct_data_dict['JobName'],
                    state=sacct_data_dict['State'],
-                   cpus=sacct_data_dict['NCPUS'],
+                   cpus=int(sacct_data_dict['NCPUS']),
                    cpu_time=sacct_data_dict['CPUTime'],
                    wall_time=sacct_data_dict['Timelimit'])
 
@@ -56,3 +56,8 @@ class Job:
 
     def wall_time(self, raw=False):
         return seconds(self._wall_time) if raw else self._cpu_time
+
+    def time_utilization(self):
+        used_time = self.cpu_time(raw=True)
+        allocated_time = self.cpus * self.wall_time(raw=True)
+        return used_time / allocated_time
