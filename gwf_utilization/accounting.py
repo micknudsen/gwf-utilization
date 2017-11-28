@@ -43,11 +43,11 @@ class Accountant:
 
 class Job:
 
-    def __init__(self, slurm_id, name, state, cpus, nodes, cpu_time, wall_time, req_mem, max_rss):
+    def __init__(self, slurm_id, name, state, cores, nodes, cpu_time, wall_time, req_mem, max_rss):
         self.slurm_id = slurm_id
         self.name = name
         self.state = state
-        self.cpus = cpus
+        self.cores = cores
         self.nodes = nodes
         self._cpu_time = cpu_time
         self._wall_time = wall_time
@@ -59,7 +59,7 @@ class Job:
         return cls(slurm_id=sacct_data_dict['JobID'],
                    name=sacct_data_dict['JobName'],
                    state=sacct_data_dict['State'],
-                   cpus=int(sacct_data_dict['NCPUS']),
+                   cores=int(sacct_data_dict['NCPUS']),
                    nodes=int(sacct_data_dict['NNodes']),
                    cpu_time=sacct_data_dict['CPUTime'],
                    wall_time=sacct_data_dict['Timelimit'],
