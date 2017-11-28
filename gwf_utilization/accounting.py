@@ -34,13 +34,15 @@ class Accountant:
 
 class Job:
 
-    def __init__(self, slurm_id, name, state, cpus, cpu_time, wall_time):
+    def __init__(self, slurm_id, name, state, cpus, cpu_time, wall_time, req_mem, max_rss):
         self.slurm_id = slurm_id
         self.name = name
         self.state = state
         self.cpus = cpus
         self._cpu_time = cpu_time
         self._wall_time = wall_time
+        self._req_mem = req_mem
+        self._max_rss = max_rss
 
     @classmethod
     def from_sacct_data_dict(cls, sacct_data_dict):
@@ -49,7 +51,9 @@ class Job:
                    state=sacct_data_dict['State'],
                    cpus=int(sacct_data_dict['NCPUS']),
                    cpu_time=sacct_data_dict['CPUTime'],
-                   wall_time=sacct_data_dict['Timelimit'])
+                   wall_time=sacct_data_dict['Timelimit'],
+                   req_mem=sacct_data_dict['ReqMem'],
+                   max_rss=sacct_data_dict['MaxRSS'])
 
     def cpu_time(self, raw=False):
         return seconds(self._cpu_time) if raw else self._cpu_time
