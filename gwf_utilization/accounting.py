@@ -4,6 +4,8 @@ SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
 
+EXPONENTS = {'': 0, 'K': 10, 'M': 20, 'G': 30, 'T': 40, 'P': 50}
+
 
 def seconds(time_string):
     '''Converts time string on the form DD-HH:MM:SS to seconds'''
@@ -20,6 +22,13 @@ def seconds(time_string):
 
     return result
 
+def bytes(memory_string):
+    '''Converts a memory string to bytes'''
+
+    memory_regexp = r'([0-9]+)([KMGTP]?)'
+    scalar, exponent = re.match(memory_regexp, memory_string).groups()
+
+    return int(scalar) * 2 ** EXPONENTS[exponent]
 
 class Accountant:
 
