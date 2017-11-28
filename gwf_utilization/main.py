@@ -30,7 +30,7 @@ def utilization(obj, targets):
         job_ids = [backend.get_job_id(target) for target in matches]
 
     # Request these outputs from sacct.
-    columns = ['JobID', 'JobName', 'State', 'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS']
+    columns = ['JobID', 'JobName', 'State', 'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes']
 
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--allocations', '--parsable2', '--jobs', ','.join(job_ids))
