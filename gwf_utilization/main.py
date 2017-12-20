@@ -6,7 +6,7 @@ from gwf.filtering import filter_names
 from gwf.backends import backend_from_config
 from gwf.backends.slurm import SlurmBackend, _call_generic
 
-from gwf_utilization.accounting import Accountant
+from gwf_utilization.accounting import get_jobs
 
 
 @click.command()
@@ -35,4 +35,4 @@ def utilization(obj, targets):
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--jobs', ','.join(job_ids))
 
-    accountant = Accountant.from_sacct_output(sacct_output)
+    print(get_jobs(sacct_output=sacct_output))

@@ -1,5 +1,6 @@
 import re
 
+
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
@@ -22,6 +23,7 @@ def seconds(time_string):
 
     return result
 
+
 def bytes(memory_string):
     '''Converts a memory string to bytes'''
 
@@ -30,15 +32,26 @@ def bytes(memory_string):
 
     return int(scalar) * 2 ** EXPONENTS[exponent]
 
-class Accountant:
 
-    def __init__(self, jobs):
-        self.jobs = jobs
+def get_jobs(sacct_output):
 
-    @classmethod
-    def from_sacct_output(cls, sacct_output):
-        sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-        return cls(jobs=[Job.from_sacct_data_dict(dict(zip(sacct_columns, entry))) for entry in sacct_data])
+    result = []
+
+    sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
+
+    for entry in sacct_data:
+
+        sacct_data_dict = dict(zip(sacct_columns, entry))
+        result.append(Job(slurm_id=sacct_data_dict['JobID'],
+                          name=sacct_data_dict['JobName'],
+                          state=sacct_data_dict['State'],
+                          cores=int(sacct_data_dict['NCPUS']),
+                          nodes=int(sacct_data_dict['NNodes']),
+                          cpu_time=sacct_data_dict['CPUTime'],
+                          wall_time=sacct_data_dict['Timelimit'],
+                          req_mem=sacct_data_dict['ReqMem'],
+                          max_rss=sacct_data_dict['MaxRSS']))
+    return result
 
 
 class Job:
@@ -53,18 +66,6 @@ class Job:
         self._wall_time = wall_time
         self._req_mem = req_mem
         self._max_rss = max_rss
-
-    @classmethod
-    def from_sacct_data_dict(cls, sacct_data_dict):
-        return cls(slurm_id=sacct_data_dict['JobID'],
-                   name=sacct_data_dict['JobName'],
-                   state=sacct_data_dict['State'],
-                   cores=int(sacct_data_dict['NCPUS']),
-                   nodes=int(sacct_data_dict['NNodes']),
-                   cpu_time=sacct_data_dict['CPUTime'],
-                   wall_time=sacct_data_dict['Timelimit'],
-                   req_mem=sacct_data_dict['ReqMem'],
-                   max_rss=sacct_data_dict['MaxRSS'])
 
     def cpu_time(self, raw=False):
         return seconds(self._cpu_time) if raw else self._cpu_time
