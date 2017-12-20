@@ -8,6 +8,11 @@ SECONDS_PER_DAY = 86400
 EXPONENTS = {'': 0, 'K': 10, 'M': 20, 'G': 30, 'T': 40, 'P': 50}
 
 
+def iterpairs(itr):
+    for i in range(0, len(itr) - 1, 2):
+        yield itr[i], itr[i + 1]
+
+
 def seconds(time_string):
     '''Converts time string on the form DD-HH:MM:SS to seconds'''
 
@@ -39,9 +44,13 @@ def get_jobs(sacct_output):
 
     sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
 
-    for entry in sacct_data:
+    for entry, entry_batch in iterpairs(sacct_data):
 
         sacct_data_dict = dict(zip(sacct_columns, entry))
+        sacct_data_dict_batch = dict(zip(sacct_columns, entry_batch))
+
+        assert sacct_data_dict_batch['JobID'] == sacct_data_dict['JobID'] + '.batch'
+
         result.append(Job(slurm_id=sacct_data_dict['JobID'],
                           name=sacct_data_dict['JobName'],
                           state=sacct_data_dict['State'],
@@ -50,7 +59,7 @@ def get_jobs(sacct_output):
                           cpu_time=sacct_data_dict['CPUTime'],
                           wall_time=sacct_data_dict['Timelimit'],
                           req_mem=sacct_data_dict['ReqMem'],
-                          max_rss=sacct_data_dict['MaxRSS']))
+                          max_rss=sacct_data_dict_batch['MaxRSS']))
     return result
 
 

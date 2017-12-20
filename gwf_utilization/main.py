@@ -34,5 +34,3 @@ def utilization(obj, targets):
 
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--jobs', ','.join(job_ids))
-
-    print(get_jobs(sacct_output=sacct_output))
