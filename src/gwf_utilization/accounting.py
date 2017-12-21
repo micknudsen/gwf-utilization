@@ -49,7 +49,7 @@ def get_jobs(sacct_output):
                           cores=int(sacct_data_dict['NCPUS']),
                           nodes=int(sacct_data_dict['NNodes']),
                           cpu_time=sacct_data_dict['CPUTime'],
-                          wall_time=sacct_data_dict['Timelimit'],
+                          time_limit=sacct_data_dict['Timelimit'],
                           req_mem=sacct_data_dict['ReqMem'],
                           max_rss=sacct_data_dict_batch['MaxRSS']))
     return result
@@ -57,26 +57,26 @@ def get_jobs(sacct_output):
 
 class Job:
 
-    def __init__(self, slurm_id, name, state, cores, nodes, cpu_time, wall_time, req_mem, max_rss):
+    def __init__(self, slurm_id, name, state, cores, nodes, time_limit, cpu_time, req_mem, max_rss):
         self.slurm_id = slurm_id
         self.name = name
         self.state = state
         self.cores = cores
         self.nodes = nodes
+        self._time_limit = time_limit
         self._cpu_time = cpu_time
-        self._wall_time = wall_time
         self._req_mem = req_mem
         self._max_rss = max_rss
 
     def cpu_time(self, raw=False):
         return seconds(self._cpu_time) if raw else self._cpu_time
 
-    def wall_time(self, raw=False):
-        return seconds(self._wall_time) if raw else self._wall_time
+    def time_limit(self, raw=False):
+        return seconds(self._time_limit) if raw else self._time_limit
 
-    def time_utilization(self):
+    def cpu_utilization(self):
         used_time = self.cpu_time(raw=True)
-        allocated_time = self.cores * self.wall_time(raw=True)
+        allocated_time = self.cores * self.time_limit(raw=True)
         return used_time / allocated_time
 
     def _raw_memory(self, memory_string):
@@ -104,7 +104,7 @@ class Job:
         for prefix, exponent in EXPONENTS.items():
             scalar = raw_memory / 2 ** exponent
             if scalar >= 1:
-                return f'{scalar:.3g}{prefix}'
+                return f'{scalar:.2g}{prefix}'
         # Memory is less than 1Kb. Just return number of bytes.
         return raw_memory
 
