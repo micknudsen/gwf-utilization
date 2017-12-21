@@ -36,11 +36,12 @@ def utilization(obj, targets):
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--state=COMPLETED', '--jobs', ','.join(job_ids))
 
-    filtered_output = [['JobID', 'Name', 'Walltime', 'Memory']] + [[job.slurm_id, job.name, job.wall_time(), job.allocated_memory()] for job in get_jobs(sacct_output=sacct_output)]
+    filtered_output = [['JobID', 'Name', 'Time Alloc', 'Time Used', 'Memory Alloc', 'Memory Used']] + [[job.slurm_id, job.name, job.wall_time(), job.cpu_time(), job.allocated_memory(), job.used_memory()] for job in get_jobs(sacct_output=sacct_output)]
 
     table = Texttable()
     table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
-    table.set_cols_dtype(['i', 't', 't', 't'])
-    table.set_cols_align(['r', 'l', 'r', 'r'])
+    table.set_cols_dtype(['i', 't', 't', 't', 't', 't'])
+    table.set_cols_align(['r', 'l', 'r', 'r', 'r', 'r'])
     table.add_rows(filtered_output)
+    table.set_cols_width([12, 50, 12, 12, 12, 12])
     print(table.draw())

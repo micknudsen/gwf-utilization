@@ -104,7 +104,7 @@ class Job:
         for prefix, exponent in EXPONENTS.items():
             scalar = raw_memory / 2 ** exponent
             if scalar >= 1:
-                return f'{scalar:.2g}{prefix}'
+                return f'{scalar:.3g}{prefix}'
         # Memory is less than 1Kb. Just return number of bytes.
         return raw_memory
 
