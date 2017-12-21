@@ -33,4 +33,4 @@ def utilization(obj, targets):
     columns = ['JobID', 'JobName', 'State', 'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes']
 
     # Run sacct and parse output.
-    sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--jobs', ','.join(job_ids))
+    sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--state=COMPLETED', '--jobs', ','.join(job_ids))

@@ -1,11 +1,12 @@
 import re
+from collections import OrderedDict
 
 
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
 
-EXPONENTS = {'': 0, 'K': 10, 'M': 20, 'G': 30, 'T': 40, 'P': 50}
+EXPONENTS = OrderedDict([('P', 50), ('T', 40), ('G', 30), ('M', 20), ('K', 10), ('', 0)])
 
 
 def iterpairs(itr):
@@ -27,11 +28,6 @@ def seconds(time_string):
         result += SECONDS_PER_DAY * int(days)
 
     return result
-
-
-def bytes(scalar, exponent):
-    '''Converts a memory string to bytes'''
-    return int(scalar) * 2 ** EXPONENTS[exponent]
 
 
 def get_jobs(sacct_output):
@@ -82,3 +78,35 @@ class Job:
         used_time = self.cpu_time(raw=True)
         allocated_time = self.cpus * self.wall_time(raw=True)
         return used_time / allocated_time
+
+    def _raw_memory(self, memory_string):
+        '''Returns number of bytes in memory_string'''
+
+        memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
+        scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
+
+        raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
+        if multiplier == 'c':
+            raw_result *= self.cores
+        elif multiplier == 'n':
+            raw_result *= self.nodes
+        return raw_result
+
+    def _pretty_memory(self, memory_string):
+        '''Returns memory in pretty form using prefix'''
+
+        # Get number of bytes. Takes into account whether
+        # memory_string specifies memory per core or per node.
+        raw_memory = self._raw_memory(memory_string)
+
+        # Find largest possible prefix. Uses that EXPONENTS
+        # is sorted in decreasing order.
+        for prefix, exponent in EXPONENTS.items():
+            scalar = raw_memory / 2 ** exponent
+            if scalar >= 1:
+                return f'{scalar}{prefix}'
+        # Memory is less than 1Kb. Just return number of bytes.
+        return raw_memory
+
+    def allocated_memory(self, raw=False):
+        return self._raw_memory(memory_string=self._req_mem) if raw else self._pretty_memory(memory_string=self._req_mem)
