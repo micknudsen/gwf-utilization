@@ -1,5 +1,5 @@
 import click
-from tabulate import tabulate
+from texttable import Texttable
 
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
@@ -36,5 +36,11 @@ def utilization(obj, targets):
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--state=COMPLETED', '--jobs', ','.join(job_ids))
 
-    output = [[job.slurm_id, job.name, job.time_utilization(), job.memory_utilization()] for job in get_jobs(sacct_output=sacct_output)]
-    print(tabulate(output, headers=['JobID', 'Name', 'Time', 'Memory'], tablefmt='pipe'))
+    filtered_output = [['JobID', 'Name']] + [[job.slurm_id, job.name] for job in get_jobs(sacct_output=sacct_output)]
+
+    table = Texttable()
+    table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
+    table.set_cols_dtype(['i', 't'])
+    table.set_cols_align(['r', 'l'])
+    table.add_rows(filtered_output)
+    print(table.draw())
