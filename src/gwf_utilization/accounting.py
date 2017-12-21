@@ -72,7 +72,7 @@ class Job:
         return seconds(self._cpu_time) if raw else self._cpu_time
 
     def wall_time(self, raw=False):
-        return seconds(self._wall_time) if raw else self._cpu_time
+        return seconds(self._wall_time) if raw else self._wall_time
 
     def time_utilization(self):
         used_time = self.cpu_time(raw=True)
