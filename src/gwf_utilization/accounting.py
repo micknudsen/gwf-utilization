@@ -76,7 +76,7 @@ class Job:
 
     def time_utilization(self):
         used_time = self.cpu_time(raw=True)
-        allocated_time = self.cpus * self.wall_time(raw=True)
+        allocated_time = self.cores * self.wall_time(raw=True)
         return used_time / allocated_time
 
     def _raw_memory(self, memory_string):
@@ -113,3 +113,6 @@ class Job:
 
     def used_memory(self, raw=False):
         return self._raw_memory(memory_string=self._max_rss) if raw else self._pretty_memory(memory_string=self._max_rss)
+
+    def memory_utilization(self):
+        return self.used_memory(raw=True) / self.allocated_memory(raw=True)
