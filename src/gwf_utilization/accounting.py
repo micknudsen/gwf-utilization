@@ -30,18 +30,6 @@ def seconds(time_string):
     return result
 
 
-def bytes(scalar, exponent):
-    '''Converts a memory string to bytes'''
-    return int(scalar) * 2 ** EXPONENTS[exponent]
-
-
-def unbytes(value):
-    for prefix, exponent in EXPONENTS.items():
-        scalar = value / 2 ** exponent
-        if scalar >= 1:
-            return f'{scalar}{prefix}'
-
-
 def get_jobs(sacct_output):
 
     result = []
@@ -91,17 +79,35 @@ class Job:
         allocated_time = self.cpus * self.wall_time(raw=True)
         return used_time / allocated_time
 
-    def allocated_memory(self, raw=False):
-        memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
-        scalar, exponent, multiplier = re.match(memory_regexp, self._req_mem).groups()
+    def _raw_memory(self, memory_string):
+        '''Returns number of bytes in memory_string'''
 
-        raw_result = bytes(scalar=scalar, exponent=exponent)
+        memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
+        print(memory_string)
+        scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
+
+        raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
         if multiplier == 'c':
             raw_result *= self.cores
         elif multiplier == 'n':
             raw_result *= self.nodes
+        return raw_result
 
-        if raw:
-            return raw_result
+    def _pretty_memory(self, memory_string):
+        '''Returns memory in pretty form using prefix'''
 
-        return unbytes(raw_result)
+        # Get number of bytes. Takes into account whether
+        # memory_string specifies memory per core or per node.
+        raw_memory = self._raw_memory(memory_string)
+
+        # Find largest possible prefix. Uses that EXPONENTS
+        # is sorted in decreasing order.
+        for prefix, exponent in EXPONENTS.items():
+            scalar = raw_memory / 2 ** exponent
+            if scalar >= 1:
+                return f'{scalar}{prefix}'
+        # Memory is less than 1Kb. Just return number of bytes.
+        return raw_memory
+
+    def allocated_memory(self, raw=False):
+        return self._pretty_memory(memory_string=self._req_mem)
