@@ -83,7 +83,6 @@ class Job:
         '''Returns number of bytes in memory_string'''
 
         memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
-        print(memory_string)
         scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
 
         raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
