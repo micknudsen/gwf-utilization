@@ -4,7 +4,8 @@ setup(
 
     name='gwf-utilization',
 
-    packages=find_packages(),
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
 
     entry_points={'gwf.plugins': ['utilization = gwf_utilization.main:utilization']},
 

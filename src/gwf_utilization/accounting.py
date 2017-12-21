@@ -29,12 +29,8 @@ def seconds(time_string):
     return result
 
 
-def bytes(memory_string):
+def bytes(scalar, exponent):
     '''Converts a memory string to bytes'''
-
-    memory_regexp = r'([0-9]+)([KMGTP]?)'
-    scalar, exponent = re.match(memory_regexp, memory_string).groups()
-
     return int(scalar) * 2 ** EXPONENTS[exponent]
 
 
@@ -86,3 +82,19 @@ class Job:
         used_time = self.cpu_time(raw=True)
         allocated_time = self.cpus * self.wall_time(raw=True)
         return used_time / allocated_time
+
+    def allocated_memory(self, raw=False):
+        memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
+        scalar, exponent, multiplier = re.match(memory_regexp, self._req_mem).groups()
+
+        if raw:
+            result = bytes(scalar=scalar, exponent=exponent)
+            if multiplier == 'c':
+                result *= self.cores
+            elif multiplier == 'n':
+                result *= self.nodes
+
+        else:
+            return 'hest'
+
+        return result
