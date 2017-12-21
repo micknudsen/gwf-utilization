@@ -109,4 +109,4 @@ class Job:
         return raw_memory
 
     def allocated_memory(self, raw=False):
-        return self._pretty_memory(memory_string=self._req_mem)
+        return self._raw_memory(memory_string=self._req_mem) if raw else self._pretty_memory(memory_string=self._req_mem)
