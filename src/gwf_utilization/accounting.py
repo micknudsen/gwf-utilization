@@ -35,6 +35,13 @@ def bytes(scalar, exponent):
     return int(scalar) * 2 ** EXPONENTS[exponent]
 
 
+def unbytes(value):
+    for prefix, exponent in EXPONENTS.items():
+        scalar = value / 2 ** exponent
+        if scalar >= 1:
+            return f'{scalar}{prefix}'
+
+
 def get_jobs(sacct_output):
 
     result = []
@@ -97,7 +104,4 @@ class Job:
         if raw:
             return raw_result
 
-        for prefix, exponent in EXPONENTS.items():
-            scalar = raw_result / 2 ** exponent
-            if scalar >= 1:
-                return f'{scalar}{prefix}'
+        return unbytes(raw_result)
