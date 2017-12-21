@@ -34,3 +34,6 @@ def utilization(obj, targets):
 
     # Run sacct and parse output.
     sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--state=COMPLETED', '--jobs', ','.join(job_ids))
+
+    for job in get_jobs(sacct_output=sacct_output):
+        print(job.slurm_id, job.allocated_memory(), job.used_memory())

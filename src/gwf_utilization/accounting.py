@@ -104,9 +104,12 @@ class Job:
         for prefix, exponent in EXPONENTS.items():
             scalar = raw_memory / 2 ** exponent
             if scalar >= 1:
-                return f'{scalar}{prefix}'
+                return f'{scalar:.2g}{prefix}'
         # Memory is less than 1Kb. Just return number of bytes.
         return raw_memory
 
     def allocated_memory(self, raw=False):
         return self._raw_memory(memory_string=self._req_mem) if raw else self._pretty_memory(memory_string=self._req_mem)
+
+    def used_memory(self, raw=False):
+        return self._raw_memory(memory_string=self._max_rss) if raw else self._pretty_memory(memory_string=self._max_rss)
