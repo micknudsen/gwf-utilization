@@ -1,11 +1,12 @@
 import re
+from collections import OrderedDict
 
 
 SECONDS_PER_MINUTE = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = 86400
 
-EXPONENTS = {'': 0, 'K': 10, 'M': 20, 'G': 30, 'T': 40, 'P': 50}
+EXPONENTS = OrderedDict([('P', 50), ('T', 40), ('G', 30), ('M', 20), ('K', 10), ('', 0)])
 
 
 def iterpairs(itr):
@@ -87,14 +88,16 @@ class Job:
         memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
         scalar, exponent, multiplier = re.match(memory_regexp, self._req_mem).groups()
 
+        raw_result = bytes(scalar=scalar, exponent=exponent)
+        if multiplier == 'c':
+            raw_result *= self.cores
+        elif multiplier == 'n':
+            raw_result *= self.nodes
+
         if raw:
-            result = bytes(scalar=scalar, exponent=exponent)
-            if multiplier == 'c':
-                result *= self.cores
-            elif multiplier == 'n':
-                result *= self.nodes
+            return raw_result
 
-        else:
-            return 'hest'
-
-        return result
+        for prefix, exponent in EXPONENTS.items():
+            scalar = raw_result / 2 ** exponent
+            if scalar >= 1:
+                return f'{scalar}{prefix}'
