@@ -10,7 +10,8 @@ setup(
     entry_points={'gwf.plugins': ['utilization = gwf_utilization.main:utilization']},
 
     install_requires=['click',
-                      'gwf>=1.2'],
+                      'gwf>=1.2',
+                      'tabulate'],
 
     author='Michael Knudsen',
     author_email='michaelk@clin.au.dk',
