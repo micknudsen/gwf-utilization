@@ -86,6 +86,7 @@ def get_jobs(sacct_output):
 
 
 class Job:
+    """Representation of a job and its used and allocated resources."""
 
     def __init__(self, slurm_id, name, state, cores, nodes, time_limit, cpu_time, req_mem, max_rss):
         self.slurm_id = slurm_id
