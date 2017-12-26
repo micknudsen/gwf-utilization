@@ -7,7 +7,9 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
 
-    entry_points={'gwf.plugins': ['utilization = gwf_utilization.main:utilization']},
+    entry_points={
+        'gwf.plugins': ['utilization = gwf_utilization.main:utilization']
+    },
 
     install_requires=[
         'click',
