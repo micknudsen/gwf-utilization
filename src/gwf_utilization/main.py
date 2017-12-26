@@ -10,6 +10,17 @@ from gwf.backends.slurm import SlurmBackend, _call_generic
 from gwf_utilization.accounting import get_jobs
 
 
+SLURM_SACCT_COLS = [
+    'JobID', 'JobName', 'State', 'NCPUS', 'CPUTime',
+    'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
+]
+
+OUTPUT_HEADER = [
+    'JobID', 'Name', 'Time Limit',
+    'Time Used', 'Memory Alloc', 'Memory Used'
+]
+
+
 @click.command()
 @click.argument('targets', nargs=-1)
 @click.pass_obj
@@ -30,18 +41,27 @@ def utilization(obj, targets):
     with backend_cls() as backend:
         job_ids = [backend.get_job_id(target) for target in matches]
 
-    # Request these outputs from sacct.
-    columns = ['JobID', 'JobName', 'State', 'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes']
-
     # Run sacct and parse output.
-    sacct_output = _call_generic('sacct', '--format=' + ','.join(columns), '--parsable2', '--state=COMPLETED', '--jobs', ','.join(job_ids))
+    sacct_output = _call_generic(
+        'sacct',
+        '--format=' + ','.join(SLURM_SACCT_COLS),
+        '--parsable2',
+        '--state=COMPLETED',
+        '--jobs', ','.join(job_ids)
+    )
 
-    filtered_output = [['JobID', 'Name', 'Time Limit', 'Time Used', 'Memory Alloc', 'Memory Used']] + [[job.slurm_id, job.name, job.time_limit(), job.cpu_time(), job.allocated_memory(), job.used_memory()] for job in get_jobs(sacct_output=sacct_output)]
+    rows = [
+        (
+            job.slurm_id, job.name, job.time_limit(), job.cpu_time(),
+            job.allocated_memory(), job.used_memory()
+        )
+        for job in get_jobs(sacct_output=sacct_output)
+    ]
 
     table = Texttable()
     table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
     table.set_cols_dtype(['i', 't', 't', 't', 't', 't'])
     table.set_cols_align(['r', 'l', 'r', 'r', 'r', 'r'])
-    table.add_rows(filtered_output)
+    table.add_rows(rows)
     table.set_cols_width([12, 50, 12, 12, 12, 12])
     print(table.draw())
