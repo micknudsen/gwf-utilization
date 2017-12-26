@@ -39,12 +39,12 @@ def _pretty_memory(memory_string):
     return raw_memory
 
 
-def iterpairs(itr):
+def _iterpairs(itr):
     for i in range(0, len(itr) - 1, 2):
         yield itr[i], itr[i + 1]
 
 
-def seconds(time_string):
+def _seconds(time_string):
     '''Converts time string on the form DD-HH:MM:SS to seconds'''
 
     time_regexp = r'(?:([0-9]+)-)?([0-9]{2}):([0-9]{2}):([0-9]{2})'
@@ -66,7 +66,7 @@ def get_jobs(sacct_output):
 
     sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
 
-    for entry, entry_batch in iterpairs(sacct_data):
+    for entry, entry_batch in _iterpairs(sacct_data):
 
         sacct_data_dict = dict(zip(sacct_columns, entry))
         sacct_data_dict_batch = dict(zip(sacct_columns, entry_batch))
@@ -99,10 +99,10 @@ class Job:
         self._max_rss = max_rss
 
     def cpu_time(self, raw=False):
-        return seconds(self._cpu_time) if raw else self._cpu_time
+        return _seconds(self._cpu_time) if raw else self._cpu_time
 
     def time_limit(self, raw=False):
-        return seconds(self._time_limit) if raw else self._time_limit
+        return _seconds(self._time_limit) if raw else self._time_limit
 
     def cpu_utilization(self):
         used_time = self.cpu_time(raw=True)
