@@ -9,6 +9,36 @@ SECONDS_PER_DAY = 86400
 EXPONENTS = OrderedDict([('P', 50), ('T', 40), ('G', 30), ('M', 20), ('K', 10), ('', 0)])
 
 
+def _raw_memory(memory_string):
+    '''Returns number of bytes in memory_string'''
+
+    memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
+    scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
+
+    raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
+    if multiplier == 'c':
+        raw_result *= self.cores
+    elif multiplier == 'n':
+        raw_result *= self.nodes
+    return raw_result
+
+def _pretty_memory(memory_string):
+    '''Returns memory in pretty form using prefix'''
+
+    # Get number of bytes. Takes into account whether
+    # memory_string specifies memory per core or per node.
+    raw_memory = _raw_memory(memory_string)
+
+    # Find largest possible prefix. Uses that EXPONENTS
+    # is sorted in decreasing order.
+    for prefix, exponent in EXPONENTS.items():
+        scalar = raw_memory / 2 ** exponent
+        if scalar >= 1:
+            return '{scalar:.2g}{prefix}'.format(scalar=scalar, prefix=prefix)
+    # Memory is less than 1Kb. Just return number of bytes.
+    return raw_memory
+
+
 def iterpairs(itr):
     for i in range(0, len(itr) - 1, 2):
         yield itr[i], itr[i + 1]
@@ -79,40 +109,11 @@ class Job:
         allocated_time = self.cores * self.time_limit(raw=True)
         return used_time / allocated_time
 
-    def _raw_memory(self, memory_string):
-        '''Returns number of bytes in memory_string'''
-
-        memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
-        scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
-
-        raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
-        if multiplier == 'c':
-            raw_result *= self.cores
-        elif multiplier == 'n':
-            raw_result *= self.nodes
-        return raw_result
-
-    def _pretty_memory(self, memory_string):
-        '''Returns memory in pretty form using prefix'''
-
-        # Get number of bytes. Takes into account whether
-        # memory_string specifies memory per core or per node.
-        raw_memory = self._raw_memory(memory_string)
-
-        # Find largest possible prefix. Uses that EXPONENTS
-        # is sorted in decreasing order.
-        for prefix, exponent in EXPONENTS.items():
-            scalar = raw_memory / 2 ** exponent
-            if scalar >= 1:
-                return f'{scalar:.2g}{prefix}'
-        # Memory is less than 1Kb. Just return number of bytes.
-        return raw_memory
-
     def allocated_memory(self, raw=False):
-        return self._raw_memory(memory_string=self._req_mem) if raw else self._pretty_memory(memory_string=self._req_mem)
+        return _raw_memory(memory_string=self._req_mem) if raw else _pretty_memory(memory_string=self._req_mem)
 
     def used_memory(self, raw=False):
-        return self._raw_memory(memory_string=self._max_rss) if raw else self._pretty_memory(memory_string=self._max_rss)
+        return _raw_memory(memory_string=self._max_rss) if raw else _pretty_memory(memory_string=self._max_rss)
 
     def memory_utilization(self):
         return self.used_memory(raw=True) / self.allocated_memory(raw=True)
