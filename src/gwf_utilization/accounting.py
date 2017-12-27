@@ -46,7 +46,7 @@ def _iterpairs(itr):
 
 
 def _seconds(time_string):
-    '''Converts time string on the form DD-HH:MM:SS to seconds'''
+    """Converts time string on the form DD-HH:MM:SS to seconds"""
 
     time_regexp = r'(?:([0-9]+)-)?([0-9]{2}):([0-9]{2}):([0-9]{2})'
     days, hours, minutes, seconds = re.match(time_regexp, time_string).groups()
@@ -62,27 +62,27 @@ def _seconds(time_string):
 
 
 def get_jobs(sacct_output):
-
     result = []
 
     sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-
     for entry, entry_batch in _iterpairs(sacct_data):
-
         sacct_data_dict = dict(zip(sacct_columns, entry))
         sacct_data_dict_batch = dict(zip(sacct_columns, entry_batch))
-
         assert sacct_data_dict_batch['JobID'] == sacct_data_dict['JobID'] + '.batch'
 
-        result.append(Job(slurm_id=sacct_data_dict['JobID'],
-                          name=sacct_data_dict['JobName'],
-                          state=sacct_data_dict['State'],
-                          cores=int(sacct_data_dict['NCPUS']),
-                          nodes=int(sacct_data_dict['NNodes']),
-                          cpu_time=sacct_data_dict['CPUTime'],
-                          time_limit=sacct_data_dict['Timelimit'],
-                          req_mem=sacct_data_dict['ReqMem'],
-                          max_rss=sacct_data_dict_batch['MaxRSS']))
+        job = Job(
+            slurm_id=sacct_data_dict['JobID'],
+            name=sacct_data_dict['JobName'],
+            state=sacct_data_dict['State'],
+            cores=int(sacct_data_dict['NCPUS']),
+            nodes=int(sacct_data_dict['NNodes']),
+            cpu_time=sacct_data_dict['CPUTime'],
+            time_limit=sacct_data_dict['Timelimit'],
+            req_mem=sacct_data_dict['ReqMem'],
+            max_rss=sacct_data_dict_batch['MaxRSS'],
+        )
+
+        result.append(job)
     return result
 
 
