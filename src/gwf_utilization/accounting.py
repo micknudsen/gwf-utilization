@@ -22,6 +22,7 @@ def _raw_memory(memory_string):
         raw_result *= self.nodes
     return raw_result
 
+
 def _pretty_memory(memory_string):
     '''Returns memory in pretty form using prefix'''
 
