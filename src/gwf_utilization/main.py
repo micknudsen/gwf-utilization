@@ -5,7 +5,7 @@ from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
 from gwf.backends import backend_from_config
-from gwf.backends.slurm import SlurmBackend, _call_generic
+from gwf.backends.slurm import SlurmBackend
 
 from gwf_utilization.accounting import get_jobs
 

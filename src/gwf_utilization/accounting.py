@@ -1,5 +1,6 @@
 import re
 from collections import OrderedDict
+from gwf.backends.slurm import SlurmBackend, _call_generic
 
 
 SECONDS_PER_MINUTE = 60
