@@ -39,16 +39,17 @@ def utilization(obj, targets):
     # Run sacct and parse output.
     rows = [
         (
-            job.slurm_id, job.name, job.time_limit(), job.cpu_time,
-            job.req_mem, job.max_rss()
+            target.name,
+            job.allocated_time, job.used_time,
+            job.allocated_memory, job.used_memory
         )
-        for job in get_jobs(job_ids)
+        for target, job in zip(matches, get_jobs(job_ids))
     ]
 
     table = Texttable()
     table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
-    table.set_cols_dtype(['i', 't', 't', 't', 't', 't'])
-    table.set_cols_align(['r', 'l', 'r', 'r', 'r', 'r'])
+    table.set_cols_dtype([t', 't', 't', 't', 't'])
+    table.set_cols_align(['l', 'r', 'r', 'r', 'r'])
     table.add_rows(rows)
-    table.set_cols_width([12, 50, 12, 12, 12, 12])
+    table.set_cols_width([50, 12, 12, 12, 12])
     print(table.draw())
