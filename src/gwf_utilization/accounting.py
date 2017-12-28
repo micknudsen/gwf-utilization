@@ -3,41 +3,16 @@ from collections import OrderedDict
 
 
 SECONDS_PER_MINUTE = 60
-SECONDS_PER_HOUR = 3600
-SECONDS_PER_DAY = 86400
+SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE
+SECONDS_PER_DAY = 24 * SECONDS_PER_HOUR
 
-EXPONENTS = OrderedDict([('P', 50), ('T', 40), ('G', 30), ('M', 20), ('K', 10), ('', 0)])
+EXPONENTS = OrderedDict([
+    ('P', 50), ('T', 40), ('G', 30), ('M', 20), ('K', 10), ('', 0)
+])
 
-
-def _raw_memory(memory_string):
-    '''Returns number of bytes in memory_string'''
-
-    memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
-    scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
-
-    raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
-    if multiplier == 'c':
-        raw_result *= self.cores
-    elif multiplier == 'n':
-        raw_result *= self.nodes
-    return raw_result
-
-
-def _pretty_memory(memory_string):
-    '''Returns memory in pretty form using prefix'''
-
-    # Get number of bytes. Takes into account whether
-    # memory_string specifies memory per core or per node.
-    raw_memory = _raw_memory(memory_string)
-
-    # Find largest possible prefix. Uses that EXPONENTS
-    # is sorted in decreasing order.
-    for prefix, exponent in EXPONENTS.items():
-        scalar = raw_memory / 2 ** exponent
-        if scalar >= 1:
-            return '{scalar:.2g}{prefix}'.format(scalar=scalar, prefix=prefix)
-    # Memory is less than 1Kb. Just return number of bytes.
-    return raw_memory
+SLURM_SACCT_COLS = (
+    'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
+)
 
 
 def _iterpairs(itr):
@@ -61,61 +36,98 @@ def _seconds(time_string):
     return result
 
 
-def get_jobs(sacct_output):
-    result = []
+def _parse_memory_string(memory_string, cores, nodes):
+    """Returns number of bytes in memory_string"""
+    memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
+    scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
 
-    sacct_columns, *sacct_data = [line.split('|') for line in sacct_output.splitlines()]
-    for entry, entry_batch in _iterpairs(sacct_data):
-        sacct_data_dict = dict(zip(sacct_columns, entry))
-        sacct_data_dict_batch = dict(zip(sacct_columns, entry_batch))
-        assert sacct_data_dict_batch['JobID'] == sacct_data_dict['JobID'] + '.batch'
+    raw_result = int(scalar) * 2 ** EXPONENTS[prefix]
+    if multiplier == 'c':
+        raw_result *= cores
+    elif multiplier == 'n':
+        raw_result *= nodes
+    return raw_result
 
-        job = Job(
-            slurm_id=sacct_data_dict['JobID'],
-            name=sacct_data_dict['JobName'],
-            state=sacct_data_dict['State'],
-            cores=int(sacct_data_dict['NCPUS']),
-            nodes=int(sacct_data_dict['NNodes']),
-            cpu_time=sacct_data_dict['CPUTime'],
-            time_limit=sacct_data_dict['Timelimit'],
-            req_mem=sacct_data_dict['ReqMem'],
-            max_rss=sacct_data_dict_batch['MaxRSS'],
+
+def format_memory(self, memory):
+    """Returns memory in pretty form using prefix"""
+    # Find largest possible prefix. Uses that EXPONENTS
+    # is sorted in decreasing order.
+    for prefix, exponent in EXPONENTS.items():
+        scalar = memory / 2 ** exponent
+        if scalar >= 1:
+            return '{scalar:.2g}{prefix}'.format(scalar=scalar, prefix=prefix)
+    # Memory is less than 1Kb. Just return number of bytes.
+    return memory
+
+
+def _call_sacct(job_ids):
+    return _call_generic(
+        'sacct',
+        '--format=' + ','.join(SLURM_SACCT_COLS),
+        '--parsable2',
+        '--state=COMPLETED',
+        '--jobs', ','.join(job_ids)
+    )
+
+
+def get_jobs_from_string(sacct_output):
+    """Yield jobs given a string of sacct output."""
+    columns, *data = [
+        line.split('|') for line in sacct_output.splitlines()
+    ]
+    for entry, entry_batch in _iterpairs(data):
+        dct = dict(zip(columns, entry))
+        dct_batch = dict(zip(columns, entry_batch))
+        assert dct_batch['JobID'] == dct['JobID'] + '.batch'
+
+        cores = int(dct['NCPUS'])
+        nodes = int(dct['NNodes'])
+
+        yield Job(
+            cores=cores,
+            nodes=nodes,
+            allocated_time=_seconds(dct['Timelimit']),
+            used_time=_seconds(dct['CPUTime']),
+            allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
+            used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
         )
 
-        result.append(job)
-    return result
+
+def get_jobs(job_ids):
+    return get_jobs_from_string(_call_sacct(job_ids))
 
 
 class Job:
-    """Representation of a job and its used and allocated resources."""
+    """Representation of a job and its used and allocated resources.
 
-    def __init__(self, slurm_id, name, state, cores, nodes, time_limit, cpu_time, req_mem, max_rss):
-        self.slurm_id = slurm_id
-        self.name = name
-        self.state = state
+    :param cores int:
+        Number of cores allocated on each node.
+    :param nodes int:
+        Number of nodes allocated.
+    :param allocated_time int:
+        Time allocated for the job in seconds.
+    :param used_time int:
+        Time used by the job in seconds.
+    :param allocated_memory int:
+        Memory allocated for the job in bytes.
+    :param used_memory int:
+        Memory used by the job in bytes.
+    """
+
+    def __init__(self, cores, nodes, allocated_time, used_time,
+                 allocated_memory, used_memory):
         self.cores = cores
         self.nodes = nodes
-        self._time_limit = time_limit
-        self._cpu_time = cpu_time
-        self._req_mem = req_mem
-        self._max_rss = max_rss
+        self.allocated_time = allocated_time
+        self.used_time = used_time
+        self.allocated_memory = allocated_memory
+        self.used_memory = used_memory
 
-    def cpu_time(self, raw=False):
-        return _seconds(self._cpu_time) if raw else self._cpu_time
-
-    def time_limit(self, raw=False):
-        return _seconds(self._time_limit) if raw else self._time_limit
-
+    @property
     def cpu_utilization(self):
-        used_time = self.cpu_time(raw=True)
-        allocated_time = self.cores * self.time_limit(raw=True)
-        return used_time / allocated_time
+        return self.used_time / (self.cores * self.allocated_time)
 
-    def allocated_memory(self, raw=False):
-        return _raw_memory(memory_string=self._req_mem) if raw else _pretty_memory(memory_string=self._req_mem)
-
-    def used_memory(self, raw=False):
-        return _raw_memory(memory_string=self._max_rss) if raw else _pretty_memory(memory_string=self._max_rss)
-
+    @property
     def memory_utilization(self):
-        return self.used_memory(raw=True) / self.allocated_memory(raw=True)
+        return self.used_memory / self.allocated_memory

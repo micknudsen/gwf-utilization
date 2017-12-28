@@ -10,11 +10,6 @@ from gwf.backends.slurm import SlurmBackend, _call_generic
 from gwf_utilization.accounting import get_jobs
 
 
-SLURM_SACCT_COLS = [
-    'JobID', 'JobName', 'State', 'NCPUS', 'CPUTime',
-    'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
-]
-
 OUTPUT_HEADER = [
     'JobID', 'Name', 'Time Limit',
     'Time Used', 'Memory Alloc', 'Memory Used'
@@ -42,20 +37,12 @@ def utilization(obj, targets):
         job_ids = [backend.get_job_id(target) for target in matches]
 
     # Run sacct and parse output.
-    sacct_output = _call_generic(
-        'sacct',
-        '--format=' + ','.join(SLURM_SACCT_COLS),
-        '--parsable2',
-        '--state=COMPLETED',
-        '--jobs', ','.join(job_ids)
-    )
-
     rows = [
         (
-            job.slurm_id, job.name, job.time_limit(), job.cpu_time(),
-            job.allocated_memory(), job.used_memory()
+            job.slurm_id, job.name, job.time_limit(), job.cpu_time,
+            job.req_mem, job.max_rss()
         )
-        for job in get_jobs(sacct_output=sacct_output)
+        for job in get_jobs(job_ids)
     ]
 
     table = Texttable()
