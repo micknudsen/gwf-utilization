@@ -7,11 +7,21 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
 
-    entry_points={'gwf.plugins': ['utilization = gwf_utilization.main:utilization']},
+    test_suite='tests',
 
-    install_requires=['click',
-                      'gwf>=1.2',
-                      'tabulate'],
+    entry_points={
+        'gwf.plugins': ['utilization = gwf_utilization.main:utilization']
+    },
+
+    install_requires=[
+        'click',
+        'gwf>=1.2',
+        'texttable',
+    ],
+
+    tests_require=[
+        'pytest'
+    ],
 
     author='Michael Knudsen',
     author_email='michaelk@clin.au.dk',
