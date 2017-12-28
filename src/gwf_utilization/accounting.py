@@ -11,7 +11,7 @@ EXPONENTS = OrderedDict([
 ])
 
 SLURM_SACCT_COLS = (
-    'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
+    'JobID', 'NCPUS', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
 )
 
 
@@ -76,6 +76,8 @@ def get_jobs_from_string(sacct_output):
     columns, *data = [
         line.split('|') for line in sacct_output.splitlines()
     ]
+
+    assert tuple(columns) == SLURM_SACCT_COLS
     for entry, entry_batch in _iterpairs(data):
         dct = dict(zip(columns, entry))
         dct_batch = dict(zip(columns, entry_batch))
