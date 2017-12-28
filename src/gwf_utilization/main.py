@@ -36,7 +36,6 @@ def utilization(obj, targets):
     with backend_cls() as backend:
         job_ids = [backend.get_job_id(target) for target in matches]
 
-    # Run sacct and parse output.
     rows = [
         (
             target.name,
@@ -48,7 +47,7 @@ def utilization(obj, targets):
 
     table = Texttable()
     table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
-    table.set_cols_dtype([t', 't', 't', 't', 't'])
+    table.set_cols_dtype(['t', 't', 't', 't', 't'])
     table.set_cols_align(['l', 'r', 'r', 'r', 'r'])
     table.add_rows(rows)
     table.set_cols_width([50, 12, 12, 12, 12])
