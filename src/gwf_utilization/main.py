@@ -14,6 +14,7 @@ OUTPUT_HEADER = [
     'Time Used', 'Memory Alloc', 'Memory Used'
 ]
 
+ROW_PADDING = 1
 
 @click.command()
 @click.argument('targets', nargs=-1)
@@ -43,3 +44,8 @@ def utilization(obj, targets):
         )
         for target, job in zip(matches, get_jobs(job_ids))
     ]
+
+    column_widths = []
+    for column_number, title in enumerate(OUTPUT_HEADER):
+        column_entries = [title] + [str(row[column_number]) for row in rows]
+        column_widths.append(max([len(entry) + 2 * ROW_PADDING for entry in column_entries]))
