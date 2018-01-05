@@ -10,7 +10,7 @@ from gwf_utilization.accounting import get_jobs
 
 
 OUTPUT_HEADER = [
-    'JobID', 'Name', 'Time Limit',
+    'Name', 'Time Limit',
     'Time Used', 'Memory Alloc', 'Memory Used'
 ]
 
