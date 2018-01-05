@@ -120,8 +120,6 @@ class Job:
 
     def __init__(self, cores, nodes, allocated_time_per_core, used_time,
                  allocated_memory, used_memory):
-        self.cores = cores
-        self.nodes = nodes
         self.allocated_time = allocated_time_per_core * cores
         self.used_time = used_time
         self.allocated_memory = allocated_memory
