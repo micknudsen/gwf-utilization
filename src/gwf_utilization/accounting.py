@@ -90,7 +90,7 @@ def get_jobs_from_string(sacct_output):
         yield Job(
             cores=cores,
             nodes=nodes,
-            allocated_time=_seconds(dct['Timelimit']),
+            allocated_time_per_core=_seconds(dct['Timelimit']),
             used_time=_seconds(dct['CPUTime']),
             allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
             used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
@@ -108,8 +108,8 @@ class Job:
         Number of cores allocated on each node.
     :param nodes int:
         Number of nodes allocated.
-    :param allocated_time int:
-        Time allocated for the job in seconds.
+    :param allocated_time_per_core int:
+        Time per core allocated for the job in seconds.
     :param used_time int:
         Time used by the job in seconds.
     :param allocated_memory int:
@@ -118,11 +118,11 @@ class Job:
         Memory used by the job in bytes.
     """
 
-    def __init__(self, cores, nodes, allocated_time, used_time,
+    def __init__(self, cores, nodes, allocated_time_per_core, used_time,
                  allocated_memory, used_memory):
         self.cores = cores
         self.nodes = nodes
-        self.allocated_time = allocated_time
+        self.allocated_time = allocated_time_per_core * cores
         self.used_time = used_time
         self.allocated_memory = allocated_memory
         self.used_memory = used_memory
