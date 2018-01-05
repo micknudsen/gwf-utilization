@@ -1,5 +1,4 @@
 import click
-from texttable import Texttable
 
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
@@ -44,11 +43,3 @@ def utilization(obj, targets):
         )
         for target, job in zip(matches, get_jobs(job_ids))
     ]
-
-    table = Texttable()
-    table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
-    table.set_cols_dtype(['t', 't', 't', 't', 't'])
-    table.set_cols_align(['l', 'r', 'r', 'r', 'r'])
-    table.add_rows(rows)
-    table.set_cols_width([50, 12, 12, 12, 12])
-    print(table.draw())
