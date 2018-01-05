@@ -14,8 +14,6 @@ OUTPUT_HEADER = [
     'Time Used', 'Memory Alloc', 'Memory Used'
 ]
 
-ROW_PADDING = 1
-
 @click.command()
 @click.argument('targets', nargs=-1)
 @click.pass_obj
@@ -48,4 +46,12 @@ def utilization(obj, targets):
     column_widths = []
     for column_number, title in enumerate(OUTPUT_HEADER):
         column_entries = [title] + [str(row[column_number]) for row in rows]
-        column_widths.append(max([len(entry) + 2 * ROW_PADDING for entry in column_entries]))
+        column_widths.append(max([len(entry) for entry in column_entries]))
+
+    column_types = ['s', 'd', 'd', 'd', 'd']
+    column_alignments = ['<', '>', '>', '>', '>']
+
+    row_format = ' | '.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(column_alignments, column_widths, column_types)])
+
+    for row in rows:
+        print('| ' + row_format.format(*row) + ' |')
