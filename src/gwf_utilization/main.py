@@ -51,7 +51,7 @@ def utilization(obj, targets):
     column_types = ['s', 'd', 'd', 'd', 'd']
     column_alignments = ['<', '>', '>', '>', '>']
 
-    row_format = ' | '.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(column_alignments, column_widths, column_types)])
+    row_format = ' '.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(column_alignments, column_widths, column_types)])
 
     for row in rows:
-        print('| ' + row_format.format(*row) + ' |')
+        print(row_format.format(*row))
