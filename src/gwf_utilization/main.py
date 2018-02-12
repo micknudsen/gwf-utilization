@@ -51,7 +51,13 @@ def utilization(obj, targets):
     column_types = ['s', 'd', 'd', 'd', 'd']
     column_alignments = ['<', '>', '>', '>', '>']
 
-    row_format = ' '.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(column_alignments, column_widths, column_types)])
+    row_format = '\t'.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(column_alignments, column_widths, column_types)])
 
+    header_types = ['s', 's', 's', 's', 's']
+    header_alignments = ['<', '<', '<', '<', '<']
+
+    header_format = '\t'.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(header_alignments, column_widths, header_types)])
+
+    print(header_format.format(*OUTPUT_HEADER))
     for row in rows:
         print(row_format.format(*row))
