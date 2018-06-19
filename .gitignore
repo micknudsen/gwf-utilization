@@ -111,3 +111,5 @@ debug
 # gwf
 .gwfconf.json
 .gwf
+
+.vscode/
