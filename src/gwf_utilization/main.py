@@ -29,7 +29,9 @@ def utilization(obj, targets):
     with backend_cls() as backend:
         job_ids = [backend.get_job_id(target) for target in matches]
 
-    column_names = ['Name', 'Time Limit', 'Time Used', 'Memory Alloc', 'Memory Used']
+    column_names = ['Name',
+                    'Time Limit', 'Time Used',
+                    'Memory Alloc', 'Memory Used']
 
     rows = [
         (
