@@ -9,9 +9,6 @@ from gwf.backends.slurm import SlurmBackend
 from gwf_utilization.accounting import get_jobs
 
 
-OUTPUT_HEADER = ['Name', 'Time Limit', 'Time Used', 'Memory Alloc', 'Memory Used']
-
-
 @click.command()
 @click.argument('targets', nargs=-1)
 @click.pass_obj
@@ -32,6 +29,8 @@ def utilization(obj, targets):
     with backend_cls() as backend:
         job_ids = [backend.get_job_id(target) for target in matches]
 
+    column_names = ['Name', 'Time Limit', 'Time Used', 'Memory Alloc', 'Memory Used']
+
     rows = [
         (
             target.name,
@@ -42,7 +41,7 @@ def utilization(obj, targets):
     ]
 
     column_widths = []
-    for column_number, title in enumerate(OUTPUT_HEADER):
+    for column_number, title in enumerate(column_names):
         column_entries = [title] + [str(row[column_number]) for row in rows]
         column_widths.append(max([len(entry) for entry in column_entries]))
 
@@ -56,6 +55,6 @@ def utilization(obj, targets):
 
     header_format = '\t'.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(header_alignments, column_widths, header_types)])
 
-    print(header_format.format(*OUTPUT_HEADER))
+    print(header_format.format(*column_names))
     for row in rows:
         print(row_format.format(*row))
