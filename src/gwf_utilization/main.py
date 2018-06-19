@@ -9,10 +9,8 @@ from gwf.backends.slurm import SlurmBackend
 from gwf_utilization.accounting import get_jobs
 
 
-OUTPUT_HEADER = [
-    'Name', 'Time Limit',
-    'Time Used', 'Memory Alloc', 'Memory Used'
-]
+OUTPUT_HEADER = ['Name', 'Time Limit', 'Time Used', 'Memory Alloc', 'Memory Used']
+
 
 @click.command()
 @click.argument('targets', nargs=-1)

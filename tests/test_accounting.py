@@ -40,5 +40,3 @@ def test_job_utilization():
 
     assert job.cpu_utilization == 0.5
     assert job.memory_utilization == 0.25
-
-
