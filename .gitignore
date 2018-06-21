@@ -113,3 +113,4 @@ debug
 .gwf
 
 .vscode/
+.pytest_cache/
