@@ -36,7 +36,7 @@ def utilization(obj, targets):
     rows = [
         (
             target.name,
-            job.allocated_time, job.used_cpu_time,
+            job.allocated_cpu_time, job.used_cpu_time,
             job.allocated_memory, job.used_memory
         )
         for target, job in zip(matches, get_jobs(job_ids))

@@ -120,14 +120,14 @@ class Job:
 
     def __init__(self, cores, nodes, allocated_time_per_core, used_cpu_time,
                  allocated_memory, used_memory):
-        self.allocated_time = allocated_time_per_core * cores
+        self.allocated_cpu_time = allocated_time_per_core * cores
         self.used_cpu_time = used_cpu_time
         self.allocated_memory = allocated_memory
         self.used_memory = used_memory
 
     @property
     def cpu_utilization(self):
-        return self.used_cpu_time / (self.cores * self.allocated_time)
+        return self.used_cpu_time / self.allocated_cpu_time
 
     @property
     def memory_utilization(self):
