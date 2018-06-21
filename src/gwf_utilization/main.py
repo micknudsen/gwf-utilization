@@ -42,21 +42,4 @@ def utilization(obj, targets):
         for target, job in zip(matches, get_jobs(job_ids))
     ]
 
-    column_widths = []
-    for column_number, title in enumerate(column_names):
-        column_entries = [title] + [str(row[column_number]) for row in rows]
-        column_widths.append(max([len(entry) for entry in column_entries]))
-
-    column_types = ['s', 'd', 'd', 'd', 'd']
-    column_alignments = ['<', '>', '>', '>', '>']
-
-    row_format = '\t'.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(column_alignments, column_widths, column_types)])
-
-    header_types = ['s', 's', 's', 's', 's']
-    header_alignments = ['<', '<', '<', '<', '<']
-
-    header_format = '\t'.join([f'{{:{a}{w}{t}}}' for a, w, t in zip(header_alignments, column_widths, header_types)])
-
-    print(header_format.format(*column_names))
-    for row in rows:
-        print(row_format.format(*row))
+    print(rows)
