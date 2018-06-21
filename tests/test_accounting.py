@@ -20,8 +20,8 @@ def test_job_utilization():
     job = Job(
         cores=1,
         nodes=1,
-        allocated_time=60,
-        used_time=30,
+        allocated_time_per_core=60,
+        used_cpu_time=30,
         allocated_memory=512,
         used_memory=256
     )
@@ -32,8 +32,8 @@ def test_job_utilization():
     job = Job(
         cores=16,
         nodes=1,
-        allocated_time=60,
-        used_time=480,
+        allocated_time_per_core=60,
+        used_cpu_time=480,
         allocated_memory=512,
         used_memory=128
     )
