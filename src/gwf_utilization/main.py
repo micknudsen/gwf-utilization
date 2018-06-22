@@ -1,4 +1,5 @@
 import click
+import math
 
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
@@ -7,6 +8,26 @@ from gwf.backends import backend_from_config
 from gwf.backends.slurm import SlurmBackend
 
 from gwf_utilization.accounting import get_jobs
+
+
+def pretty_time(time_in_seconds):
+    minutes, seconds = divmod(time_in_seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    result = '%02d:%02d:%02d' % (hours, minutes, seconds)
+    if days:
+        result = '%d-' % days + result
+    return result
+
+
+def pretty_size(size_in_bytes):
+    if size_in_bytes == 0:
+        return '0 B'
+    size_name = ('B', 'KB', 'MB', 'GB', 'TB', 'PB')
+    exponent = int(math.floor(math.log(size_in_bytes, 1024)))
+    multiplier = math.pow(1024, exponent)
+    result = round(size_in_bytes / multiplier, 2)
+    return '%s %s' % (result, size_name[exponent])
 
 
 @click.command()
