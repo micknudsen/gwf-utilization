@@ -50,18 +50,6 @@ def _parse_memory_string(memory_string, cores, nodes):
     return raw_result
 
 
-def format_memory(self, memory):
-    """Returns memory in pretty form using prefix"""
-    # Find largest possible prefix. Uses that EXPONENTS
-    # is sorted in decreasing order.
-    for prefix, exponent in EXPONENTS.items():
-        scalar = memory / 2 ** exponent
-        if scalar >= 1:
-            return '{scalar:.2g}{prefix}'.format(scalar=scalar, prefix=prefix)
-    # Memory is less than 1Kb. Just return number of bytes.
-    return memory
-
-
 def _call_sacct(job_ids):
     return _call_generic(
         'sacct',
