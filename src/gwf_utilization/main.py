@@ -1,6 +1,8 @@
 import click
 import math
 
+from texttable import Texttable
+
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
@@ -50,17 +52,17 @@ def utilization(obj, targets):
     with backend_cls() as backend:
         job_ids = [backend.get_job_id(target) for target in matches]
 
-    column_names = ['Name',
-                    'Time Limit', 'Time Used',
-                    'Memory Alloc', 'Memory Used']
+    rows = [['Target', 'Memory Allocated', 'Memory Used', 'Allocated CPU Time', 'Used CPU Time', 'Memory Utilization', 'CPU Utilization']]
+    for target, job in zip(matches, get_jobs(job_ids)):
+        rows.append([target.name,
+                     pretty_size(job.allocated_memory),
+                     pretty_size(job.used_memory),
+                     pretty_time(job.allocated_cpu_time),
+                     pretty_time(job.used_cpu_time),
+                     '{:.1%}'.format(job.memory_utilization),
+                     '{:.0%}'.format(job.cpu_utilization)])
 
-    rows = [
-        (
-            target.name,
-            job.allocated_cpu_time, job.used_cpu_time,
-            job.allocated_memory, job.used_memory
-        )
-        for target, job in zip(matches, get_jobs(job_ids))
-    ]
+    table = Texttable()
+    table.add_rows(rows)
 
-    print(rows)
+    print(table.draw())
