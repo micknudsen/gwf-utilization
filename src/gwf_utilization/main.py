@@ -55,7 +55,10 @@ def utilization(obj, targets):
     target_column_width = max([len(target.name) for target in matches]) + 1
 
     table = Texttable()
+
     table.set_cols_width([target_column_width, 12, 12, 12, 12, 10, 10])
+    table.set_cols_align(['l', 'r', 'r', 'r', 'r', 'r', 'r'])
+
     table.add_row(['Target', 'Mem Alloc', 'Mem Use', 'CPU Alloc', 'CPU Use', 'Mem', 'CPU'])
     for target, job in zip(matches, get_jobs(job_ids)):
         table.add_row([target.name,
