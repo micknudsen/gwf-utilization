@@ -52,17 +52,16 @@ def utilization(obj, targets):
     with backend_cls() as backend:
         job_ids = [backend.get_job_id(target) for target in matches]
 
-    rows = [['Target', 'Memory Allocated', 'Memory Used', 'Allocated CPU Time', 'Used CPU Time', 'Memory Utilization', 'CPU Utilization']]
-    for target, job in zip(matches, get_jobs(job_ids)):
-        rows.append([target.name,
-                     pretty_size(job.allocated_memory),
-                     pretty_size(job.used_memory),
-                     pretty_time(job.allocated_cpu_time),
-                     pretty_time(job.used_cpu_time),
-                     '{:.1%}'.format(job.memory_utilization),
-                     '{:.0%}'.format(job.cpu_utilization)])
-
     table = Texttable()
-    table.add_rows(rows)
+
+    table.add_row(['Target', 'Memory Allocated', 'Memory Used', 'Allocated CPU Time', 'Used CPU Time', 'Memory Utilization', 'CPU Utilization'])
+    for target, job in zip(matches, get_jobs(job_ids)):
+        table.add_row([target.name,
+                       pretty_size(job.allocated_memory),
+                       pretty_size(job.used_memory),
+                       pretty_time(job.allocated_cpu_time),
+                       pretty_time(job.used_cpu_time),
+                       '{:.1%}'.format(job.memory_utilization),
+                       '{:.0%}'.format(job.cpu_utilization)])
 
     print(table.draw())
