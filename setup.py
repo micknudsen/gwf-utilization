@@ -15,8 +15,7 @@ setup(
 
     install_requires=[
         'click',
-        'gwf>=1.2',
-        'texttable'
+        'gwf>=1.2'
     ],
 
     tests_require=[

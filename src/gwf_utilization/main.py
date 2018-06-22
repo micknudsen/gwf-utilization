@@ -1,8 +1,6 @@
 import click
 import math
 
-from texttable import Texttable
-
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
@@ -54,19 +52,11 @@ def utilization(obj, targets):
 
     target_column_width = max([len(target.name) for target in matches]) + 1
 
-    table = Texttable()
-
-    table.set_cols_width([target_column_width, 12, 12, 12, 12, 10, 10])
-    table.set_cols_align(['l', 'r', 'r', 'r', 'r', 'r', 'r'])
-
-    table.add_row(['Target', 'Mem Alloc', 'Mem Use', 'CPU Alloc', 'CPU Use', 'Mem', 'CPU'])
     for target, job in zip(matches, get_jobs(job_ids)):
-        table.add_row([target.name,
-                       pretty_size(job.allocated_memory),
-                       pretty_size(job.used_memory),
-                       pretty_time(job.allocated_cpu_time),
-                       pretty_time(job.used_cpu_time),
-                       '{:.1%}'.format(job.memory_utilization),
-                       '{:.0%}'.format(job.cpu_utilization)])
-
-    print(table.draw())
+        print(f'{target.name:<{target_column_width}}'
+              f'{pretty_size(job.allocated_memory):>16}'
+              f'{pretty_size(job.used_memory):>16}'
+              f'{pretty_time(job.allocated_cpu_time):>16}'
+              f'{pretty_time(job.used_cpu_time):>16}'
+              f'{job.memory_utilization:>12.1%}',
+              f'{job.cpu_utilization:>12.1%}')
