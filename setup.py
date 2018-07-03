@@ -18,10 +18,6 @@ setup(
         'gwf>=1.2'
     ],
 
-    tests_require=[
-        'pytest'
-    ],
-
     author='Michael Knudsen',
     author_email='michaelk@clin.au.dk',
     license='MIT'
