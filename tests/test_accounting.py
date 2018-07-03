@@ -3,11 +3,32 @@ import unittest
 from gwf_utilization.accounting import Job, get_jobs_from_string
 
 
-class TestTrue(unittest.TestCase):
+class TestAccounting(unittest.TestCase):
 
-    def test_true(self):
-        self.assertTrue(True)
+    def test_job_utilization(self):
+        job = Job(
+            cores=1,
+            nodes=1,
+            allocated_time_per_core=60,
+            used_cpu_time=30,
+            allocated_memory=512,
+            used_memory=256
+        )
 
+        self.assertEqual(job.cpu_utilization, 0.5)
+        self.assertEqual(job.memory_utilization, 0.5)
+
+        job = Job(
+            cores=16,
+            nodes=1,
+            allocated_time_per_core=60,
+            used_cpu_time=480,
+            allocated_memory=512,
+            used_memory=128
+        )
+
+        self.assertEqual(job.cpu_utilization, 0.5)
+        self.assertEqual(job.memory_utilization, 0.25)
 
 # def test_get_jobs_from_string():
 #     output = (
@@ -20,29 +41,3 @@ class TestTrue(unittest.TestCase):
 
 #     jobs = list(get_jobs_from_string(output))
 #     assert len(jobs) == 2
-
-
-# def test_job_utilization():
-#     job = Job(
-#         cores=1,
-#         nodes=1,
-#         allocated_time_per_core=60,
-#         used_cpu_time=30,
-#         allocated_memory=512,
-#         used_memory=256
-#     )
-
-#     assert job.cpu_utilization == 0.5
-#     assert job.memory_utilization == 0.5
-
-#     job = Job(
-#         cores=16,
-#         nodes=1,
-#         allocated_time_per_core=60,
-#         used_cpu_time=480,
-#         allocated_memory=512,
-#         used_memory=128
-#     )
-
-#     assert job.cpu_utilization == 0.5
-#     assert job.memory_utilization == 0.25
