@@ -1,14 +1,12 @@
 import unittest
 
+from gwf_utilization.accounting import Job, get_jobs_from_string
+
+
 class TestTrue(unittest.TestCase):
 
     def test_true(self):
         self.assertTrue(True)
-
-
-# import pytest
-
-# from gwf_utilization.accounting import Job, get_jobs_from_string
 
 
 # def test_get_jobs_from_string():
