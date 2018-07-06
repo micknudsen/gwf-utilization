@@ -30,14 +30,15 @@ class TestAccounting(unittest.TestCase):
         self.assertEqual(job.cpu_utilization, 0.5)
         self.assertEqual(job.memory_utilization, 0.25)
 
-# def test_get_jobs_from_string():
-#     output = (
-#         "JobID|NCPUS|CPUTime|Timelimit|ReqMem|MaxRSS|NNodes\n"
-#         "1|1|00:06:10|06:00:00|8Gn||1\n"
-#         "1.batch|1|00:06:10||8Gn|3324536K|1\n"
-#         "2|4|00:00:30|2-00:00:00|4Gn||2\n"
-#         "2.batch|4|00:00:30||4Gn|115180K|2\n"
-#     )
 
-#     jobs = list(get_jobs_from_string(output))
-#     assert len(jobs) == 2
+    def test_get_jobs_from_string(self):
+        output = (
+            "JobID|NCPUS|CPUTime|Timelimit|ReqMem|MaxRSS|NNodes\n"
+            "1|1|00:06:10|06:00:00|8Gn||1\n"
+            "1.batch|1|00:06:10||8Gn|3324536K|1\n"
+            "2|4|00:00:30|2-00:00:00|4Gn||2\n"
+            "2.batch|4|00:00:30||4Gn|115180K|2\n"
+        )
+
+        jobs = list(get_jobs_from_string(output))
+        self.assertEqual(len(jobs), 2)
