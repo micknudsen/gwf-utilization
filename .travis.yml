@@ -10,8 +10,9 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels gwforg
   - conda update -q conda
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION click gwf
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION click coveralls gwf
   - source activate test-environment
   - python setup.py install
 script:
-  - python setup.py test
+  - coverage run --source=gwf-utilization setup.py test
+  - coveralls
