@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/micknudsen/gwf-utilization.svg?branch=master)](https://travis-ci.org/micknudsen/gwf-utilization)
+[![Build Status](https://travis-ci.org/micknudsen/gwf-utilization.svg?branch=master)](https://travis-ci.org/micknudsen/gwf-utilization) [![Coverage Status](https://coveralls.io/repos/github/micknudsen/gwf-utilization/badge.svg?branch=master)](https://coveralls.io/github/micknudsen/gwf-utilization?branch=master)
 
 # gwf-utilization
 
