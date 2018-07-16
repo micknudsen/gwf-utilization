@@ -13,6 +13,8 @@ setup(
         'gwf.plugins': ['utilization = gwf_utilization.main:utilization']
     },
 
+    python_requires='>=3.6',
+
     install_requires=[
         'click',
         'gwf>=1.2'
