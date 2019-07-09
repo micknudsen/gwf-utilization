@@ -102,7 +102,9 @@ ENV/
 
 # Weird Mac OS files
 ._*
+.DS_Store
 
+# Debug
 debug
 
 # Weird nfs files
