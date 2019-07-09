@@ -1,24 +1,26 @@
 language: python
-python:
-  - "3.6"
+matrix:
+  include:
+    - python: 3.6
+      dist: xenial
+      sudo: true
+    - python: 3.7
+      dist: xenial
+      sudo: true
 install:
-  # Make sure that everything is up to date
   - sudo apt-get update
-  # Set up Miniconda
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
-  # Answer yes to all questions to prevent conda from hanging indefinitely
-  - conda config --set always_yes yes
-  # Add required non-default channels
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels gwforg
-  # Update conda and create environment wit required packages
+  - conda config --add channels bioconda
+  - conda config --add channels conda-forge
   - conda update -q conda
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION click coveralls gwf
+  - conda create -q -n test-environment python=${TRAVIS_PYTHON_VERSION%-dev} click coveralls
   - source activate test-environment
-  # Install gwf-utilization
   - python setup.py install
 script:
-  # Run tests and calculate coverage
-  - coverage run --source=gwf_utilization setup.py test
+  - coverage run --source=gwf-utilization setup.py test
   - coveralls
