@@ -1,0 +1,26 @@
+package:
+  name: gwf-utilization
+  version: '0.1'
+
+source:
+  git_rev: v0.1
+  git_url: git@github.com:micknudsen/gwf-utilization.git
+
+build:
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - click
+    - gwf >=1.2
+    - python >=3.6
+
+about:
+  home: https://github.com/micknudsen/gwf-utilization
+  license: MIT
+  summary: Calculate utilization of allocated resources in a gwf workflow
