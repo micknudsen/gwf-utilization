@@ -55,7 +55,6 @@ def _call_sacct(job_ids):
         'sacct',
         '--format=' + ','.join(SLURM_SACCT_COLS),
         '--parsable2',
-        '--state=COMPLETED',
         '--jobs', ','.join(job_ids)
     )
 
