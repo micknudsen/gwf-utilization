@@ -66,7 +66,7 @@ def utilization(obj, targets):
 
     table = Texttable()
 
-    table.set_deco(Texttable.HEADER|Texttable.VLINES)
+    table.set_deco(Texttable.HEADER | Texttable.VLINES)
 
     ncols = len(rows[0])
 
