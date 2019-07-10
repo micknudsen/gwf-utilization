@@ -17,7 +17,8 @@ setup(
 
     install_requires=[
         'click',
-        'gwf>=1.2'
+        'gwf>=1.2',
+        'texttable>=1.4.0'
     ],
 
     author='Michael Knudsen',

@@ -1,6 +1,8 @@
 import click
 import math
 
+from texttable import Texttable
+
 from gwf.core import graph_from_config
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
@@ -52,11 +54,26 @@ def utilization(obj, targets):
 
     target_column_width = max([len(target.name) for target in matches]) + 1
 
+    rows = [['Target', 'Memory Allocated', 'Memory Used', 'Allocated CPU Time', 'Used CPU Time', 'Memory Utilization', 'CPU Utilization']]
     for target, job in zip(matches, get_jobs(job_ids)):
-        print(f'{target.name:<{target_column_width}}'
-              f'{pretty_size(job.allocated_memory):>16}'
-              f'{pretty_size(job.used_memory):>16}'
-              f'{pretty_time(job.allocated_cpu_time):>16}'
-              f'{pretty_time(job.used_cpu_time):>16}'
-              f'{job.memory_utilization:>12.1%}',
-              f'{job.cpu_utilization:>12.1%}')
+        rows.append([target.name,
+                     pretty_size(job.allocated_memory),
+                     pretty_size(job.used_memory),
+                     pretty_time(job.allocated_cpu_time),
+                     pretty_time(job.used_cpu_time),
+                     '{:.0%}'.format(job.memory_utilization),
+                     '{:.0%}'.format(job.cpu_utilization)])
+
+    table = Texttable()
+
+    table.set_deco(Texttable.HEADER|Texttable.VLINES)
+
+    ncols = len(rows[0])
+
+    table.set_max_width(0)
+    table.set_header_align('l' * ncols)
+    table.set_cols_align(['l'] + (ncols - 1) * ['r'])
+
+    table.add_rows(rows)
+
+    print(table.draw())
