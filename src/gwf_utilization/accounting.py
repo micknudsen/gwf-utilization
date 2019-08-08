@@ -60,6 +60,7 @@ def _call_sacct(job_id, include_header=False):
         'sacct',
         '--format=' + ','.join(SLURM_SACCT_COLS),
         '--parsable2',
+        '--state', 'completed',
         '--jobs', job_id
     )
 
