@@ -55,7 +55,7 @@ def _parse_memory_string(memory_string, cores, nodes):
     return raw_result
 
 
-def _call_sacct(job_ids):
+def _call_sacct_batch(job_ids):
     return _call_generic(
         'sacct',
         '--format=' + ','.join(SLURM_SACCT_COLS),
@@ -90,7 +90,7 @@ def get_jobs_from_string(sacct_output):
 
 
 def get_jobs(job_ids):
-    return get_jobs_from_string(_call_sacct(job_ids))
+    return get_jobs_from_string(_call_sacct_batch(job_ids))
 
 
 class Job:
