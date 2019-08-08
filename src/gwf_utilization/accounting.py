@@ -71,12 +71,10 @@ def _call_sacct(job_id, include_header=False):
 
 
 def _call_sacct_batch(job_ids):
-    return _call_generic(
-        'sacct',
-        '--format=' + ','.join(SLURM_SACCT_COLS),
-        '--parsable2',
-        '--jobs', ','.join(job_ids)
-    )
+    result = _call_sacct(job_ids[0], include_header=True)
+    for job_id in job_ids[1:]:
+        result += _call_sacct(job_id)
+    return result
 
 
 def get_jobs_from_string(sacct_output):
