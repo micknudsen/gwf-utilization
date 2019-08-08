@@ -39,6 +39,11 @@ def _seconds(time_string):
 
 def _parse_memory_string(memory_string, cores, nodes):
     """Returns number of bytes in memory_string"""
+
+    # If job is very tiny, SLURM may not report used memory at all.
+    if not memory_string:
+        return 0
+
     memory_regexp = r'([0-9]+)([KMGTP]?)([cn]?)'
     scalar, prefix, multiplier = re.match(memory_regexp, memory_string).groups()
 
