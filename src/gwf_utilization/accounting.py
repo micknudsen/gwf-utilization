@@ -55,13 +55,20 @@ def _parse_memory_string(memory_string, cores, nodes):
     return raw_result
 
 
-def _call_sacct(job_id):
-    return _call_generic(
+def _call_sacct(job_id, include_header=False):
+    result = _call_generic(
         'sacct',
         '--format=' + ','.join(SLURM_SACCT_COLS),
         '--parsable2',
         f'--jobs {job_id}'
     )
+
+    if include_header:
+        return result
+
+    # Skip first line (the header).
+    return '\n'.join(result.split('\n')[1:])
+
 
 def _call_sacct_batch(job_ids):
     return _call_generic(
