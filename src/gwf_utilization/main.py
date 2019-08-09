@@ -54,7 +54,7 @@ def utilization(obj, targets):
 
     target_column_width = max([len(target.name) for target in matches]) + 1
 
-    rows = [['Target', 'Memory Allocated', 'Memory Used', 'Allocated CPU Time', 'Used CPU Time', 'Memory Utilization', 'CPU Utilization']]
+    rows = [['Target', 'Allocated Memory', 'Memory Used', 'Allocated CPU Time', 'Used CPU Time', 'Memory Utilization', 'CPU Utilization']]
     for target, job in zip(matches, get_jobs(job_ids)):
         rows.append([target.name,
                      pretty_size(job.allocated_memory),
