@@ -2,10 +2,11 @@
 
 # gwf-utilization
 
-This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing information about how well allocated resources have been used. Simply write `gwf utilization` in your workflow directory.
+This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing information about how well allocated resources have been used
 
 
 ```
+$ gwf utilization
 +----------------------------------------+-------+----------------+---------------+--------------+-------------+----------------+---------------+------------+----------+-------+
 | Target                                 | Cores | Walltime Alloc | Walltime Used | Memory Alloc | Memory Used | CPU Time Alloc | CPU Time Used | Walltime % | Memory % | CPU % |
 +========================================+=======+================+===============+==============+=============+================+===============+============+==========+=======+
