@@ -20,7 +20,7 @@ $ gwf utilization
 +----------------------------------------+-------+----------------+---------------+--------------+-------------+----------------+---------------+------------+----------+-------+
 ```
 
-The simples way to install `gwf-utilization` is by using conda:
+The simplest way to install `gwf-utilization` is by using conda:
 
 ```
 $ conda install -c micknudsen gwf-utilization
