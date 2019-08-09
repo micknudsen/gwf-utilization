@@ -58,7 +58,7 @@ def utilization(obj, targets):
     for target, job in zip(matches, get_jobs(job_ids)):
         rows.append([target.name,
                      job.allocated_cores,
-                     pretty_time(job.allocated_walltime),
+                     pretty_time(job.allocated_time_per_core),
                      pretty_time(job.used_walltime),
                      pretty_size(job.allocated_memory),
                      pretty_size(job.used_memory),
