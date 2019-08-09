@@ -12,7 +12,7 @@ EXPONENTS = OrderedDict([
 ])
 
 SLURM_SACCT_COLS = (
-    'JobID', 'NCPUS', 'Elapsed', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
+    'JobID', 'State', 'NCPUS', 'Elapsed', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
 )
 
 
@@ -60,7 +60,6 @@ def _call_sacct(job_id, include_header=False):
         'sacct',
         '--format=' + ','.join(SLURM_SACCT_COLS),
         '--parsable2',
-        '--state', 'completed',
         '--jobs', job_id
     )
 
@@ -83,25 +82,28 @@ def get_jobs_from_string(sacct_output):
     columns, *data = [
         line.split('|') for line in sacct_output.splitlines()
     ]
-
     assert tuple(columns) == SLURM_SACCT_COLS
+
     for entry, entry_batch in _iterpairs(data):
         dct = dict(zip(columns, entry))
-        dct_batch = dict(zip(columns, entry_batch))
-        assert dct_batch['JobID'] == dct['JobID'] + '.batch'
 
-        cores = int(dct['NCPUS'])
-        nodes = int(dct['NNodes'])
+        if dct['State'] == 'COMPLETED':
 
-        yield Job(
-            cores=cores,
-            nodes=nodes,
-            used_walltime=_seconds(dct['Elapsed']),
-            allocated_time_per_core=_seconds(dct['Timelimit']),
-            used_cpu_time=_seconds(dct['CPUTime']),
-            allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
-            used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
-        )
+            dct_batch = dict(zip(columns, entry_batch))
+            assert dct_batch['JobID'] == dct['JobID'] + '.batch'
+
+            cores = int(dct['NCPUS'])
+            nodes = int(dct['NNodes'])
+
+            yield Job(
+                cores=cores,
+                nodes=nodes,
+                used_walltime=_seconds(dct['Elapsed']),
+                allocated_time_per_core=_seconds(dct['Timelimit']),
+                used_cpu_time=_seconds(dct['CPUTime']),
+                allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
+                used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
+            )
 
 
 def get_jobs(job_ids):
