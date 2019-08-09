@@ -34,7 +34,6 @@ class TestAccounting(unittest.TestCase):
         self.assertEqual(job.cpu_utilization, 50)
         self.assertEqual(job.memory_utilization, 25)
 
-
     def test_get_jobs_from_string(self):
         output = (
             "JobID|NCPUS|Elapsed|CPUTime|Timelimit|ReqMem|MaxRSS|NNodes\n"
