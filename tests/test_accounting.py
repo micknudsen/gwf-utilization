@@ -9,30 +9,28 @@ class TestAccounting(unittest.TestCase):
         job = Job(
             cores=1,
             nodes=1,
-            allocated_walltime=100,
-            used_walltime=10,
+            used_walltime=12,
             allocated_time_per_core=60,
             used_cpu_time=30,
             allocated_memory=512,
             used_memory=256
         )
 
-        self.assertEqual(job.walltime_utilization, 10)
+        self.assertEqual(job.walltime_utilization, 20)
         self.assertEqual(job.cpu_utilization, 50)
         self.assertEqual(job.memory_utilization, 50)
 
         job = Job(
             cores=16,
             nodes=1,
-            allocated_walltime=100,
-            used_walltime=10,
+            used_walltime=12,
             allocated_time_per_core=60,
             used_cpu_time=480,
             allocated_memory=512,
             used_memory=128
         )
 
-        self.assertEqual(job.walltime_utilization, 10)
+        self.assertEqual(job.walltime_utilization, 20)
         self.assertEqual(job.cpu_utilization, 50)
         self.assertEqual(job.memory_utilization, 25)
 

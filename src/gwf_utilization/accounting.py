@@ -96,7 +96,6 @@ def get_jobs_from_string(sacct_output):
         yield Job(
             cores=cores,
             nodes=nodes,
-            allocated_walltime=_seconds(dct['Timelimit']),
             used_walltime=_seconds(dct['Elapsed']),
             allocated_time_per_core=_seconds(dct['Timelimit']),
             used_cpu_time=_seconds(dct['CPUTime']),
@@ -126,9 +125,9 @@ class Job:
         Memory used by the job in bytes.
     """
 
-    def __init__(self, cores, nodes, allocated_walltime, used_walltime, allocated_time_per_core,
+    def __init__(self, cores, nodes, allocated_time_per_core, used_walltime,
                  used_cpu_time, allocated_memory, used_memory):
-        self.allocated_walltime = allocated_walltime
+        self.allocated_time_per_core = allocated_time_per_core
         self.used_walltime = used_walltime
         self.allocated_cores = cores * nodes
         self.allocated_cpu_time = allocated_time_per_core * cores
@@ -138,7 +137,7 @@ class Job:
 
     @property
     def walltime_utilization(self):
-        return self.used_walltime / self.allocated_walltime * 100
+        return self.used_walltime / self.allocated_time_per_core * 100
 
     @property
     def cpu_utilization(self):
