@@ -119,8 +119,10 @@ class Job:
         Number of nodes allocated.
     :param allocated_time_per_core int:
         Time per core allocated for the job in seconds.
-    :param used_time int:
-        Time used by the job in seconds.
+    :param used_walltime
+        Walltime used by the job in seconds.
+    :param used_cpu_time int:
+        CPU time used by the job in seconds.
     :param allocated_memory int:
         Memory allocated for the job in bytes.
     :param used_memory int:
