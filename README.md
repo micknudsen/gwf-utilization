@@ -2,7 +2,7 @@
 
 # gwf-utilization
 
-This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing information about how well allocated resources have been used
+This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing information about how well allocated resources have been used:
 
 
 ```
@@ -23,5 +23,5 @@ $ gwf utilization
 The simples way to install `gwf-utilization` is by using conda:
 
 ```
-$ conda install -c micknudsen gwf-utilzation
+$ conda install -c micknudsen gwf-utilization
 ```
