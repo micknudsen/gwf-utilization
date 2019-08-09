@@ -36,11 +36,11 @@ class TestAccounting(unittest.TestCase):
 
     def test_get_jobs_from_string(self):
         output = (
-            "JobID|NCPUS|Elapsed|CPUTime|Timelimit|ReqMem|MaxRSS|NNodes\n"
-            "1|1|00:02:00|00:06:10|06:00:00|8Gn||1\n"
-            "1.batch|1|00:02:00|00:06:10||8Gn|3324536K|1\n"
-            "2|4|00:00:10|00:00:30|2-00:00:00|4Gn||2\n"
-            "2.batch|4|00:00:10|00:00:30||4Gn|115180K|2\n"
+            "JobID|State|NCPUS|Elapsed|CPUTime|Timelimit|ReqMem|MaxRSS|NNodes\n"
+            "1|COMPLETED|1|00:02:00|00:06:10|06:00:00|8Gn||1\n"
+            "1.batch|COMPLETED|1|00:02:00|00:06:10||8Gn|3324536K|1\n"
+            "2|COMPLETED|4|00:00:10|00:00:30|2-00:00:00|4Gn||2\n"
+            "2.batch|COMPLETED|4|00:00:10|00:00:30||4Gn|115180K|2\n"
         )
 
         jobs = list(get_jobs_from_string(output))
