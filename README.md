@@ -4,6 +4,7 @@
 
 This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing information about how well allocated resources have been used. Simply write `gwf utilization` in your workflow directory.
 
+
 ```
 +----------------------------------------+-------+----------------+---------------+--------------+-------------+----------------+---------------+------------+----------+-------+
 | Target                                 | Cores | Walltime Alloc | Walltime Used | Memory Alloc | Memory Used | CPU Time Alloc | CPU Time Used | Walltime % | Memory % | CPU % |
@@ -16,4 +17,10 @@ This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing infor
 | StarAlignment_SampleName               |    36 |       00:30:00 |      00:08:44 |      64.0 GB |    44.12 GB |       18:00:00 |      05:14:24 |       29.1 |     68.9 |  29.1 |
 | StarFusion_SampleName                  |    16 |       01:00:00 |      00:29:25 |      64.0 GB |    41.19 GB |       16:00:00 |      07:50:40 |       49.0 |     64.4 |  49.0 |
 +----------------------------------------+-------+----------------+---------------+--------------+-------------+----------------+---------------+------------+----------+-------+
+```
+
+The simples way to install `gwf-utilization` is by using conda:
+
+```
+$ conda install -c micknudsen gwf-utilzation
 ```
