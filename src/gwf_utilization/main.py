@@ -50,7 +50,12 @@ def utilization(obj, targets):
         matches = filter_names(matches, targets)
 
     with backend_cls() as backend:
-        job_ids = [backend.get_job_id(target) for target in matches]
+        job_ids = []
+        for target in matches:
+            try:
+                job_ids.append(backend.get_job_id(target))
+            except KeyError:
+                pass
 
     target_column_width = max([len(target.name) for target in matches]) + 1
 
