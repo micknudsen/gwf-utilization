@@ -19,6 +19,7 @@ requirements:
     - click
     - gwf >=1.2
     - python >=3.6
+    - texttable >=1.4.0
 
 about:
   home: https://github.com/micknudsen/gwf-utilization
