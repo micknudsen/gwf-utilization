@@ -80,30 +80,31 @@ def _call_sacct_batch(job_ids):
 def get_jobs_from_string(sacct_output):
     """Yield jobs given a string of sacct output."""
     columns, *data = [
-        line.split('|') for line in sacct_output.splitlines()
+        line.split('|') for i, line in enumerate(sacct_output.splitlines()) if i == 0 or 'COMPLETED' in line
     ]
     assert tuple(columns) == SLURM_SACCT_COLS
 
     for entry, entry_batch in _iterpairs(data):
         dct = dict(zip(columns, entry))
 
-        if dct['State'] == 'COMPLETED':
+        dct_batch = dict(zip(columns, entry_batch))
+        if not dct_batch['JobID'] == dct['JobID'] + '.batch':
+            print(dct)
+            print(dct_batch)
+        assert dct_batch['JobID'] == dct['JobID'] + '.batch'
 
-            dct_batch = dict(zip(columns, entry_batch))
-            assert dct_batch['JobID'] == dct['JobID'] + '.batch'
+        cores = int(dct['NCPUS'])
+        nodes = int(dct['NNodes'])
 
-            cores = int(dct['NCPUS'])
-            nodes = int(dct['NNodes'])
-
-            yield Job(
-                cores=cores,
-                nodes=nodes,
-                used_walltime=_seconds(dct['Elapsed']),
-                allocated_time_per_core=_seconds(dct['Timelimit']),
-                used_cpu_time=_seconds(dct['CPUTime']),
-                allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
-                used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
-            )
+        yield Job(
+            cores=cores,
+            nodes=nodes,
+            used_walltime=_seconds(dct['Elapsed']),
+            allocated_time_per_core=_seconds(dct['Timelimit']),
+            used_cpu_time=_seconds(dct['CPUTime']),
+            allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
+            used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
+        )
 
 
 def get_jobs(job_ids):
