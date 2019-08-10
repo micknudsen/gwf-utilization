@@ -111,9 +111,6 @@ def get_jobs_from_string(sacct_output):
         dct = dict(zip(columns, entry))
 
         dct_batch = dict(zip(columns, entry_batch))
-        if not dct_batch['JobID'] == dct['JobID'] + '.batch':
-            print(dct)
-            print(dct_batch)
         assert dct_batch['JobID'] == dct['JobID'] + '.batch'
 
         cores = int(dct['NCPUS'])
