@@ -12,7 +12,7 @@ EXPONENTS = OrderedDict([
 ])
 
 SLURM_SACCT_COLS = (
-    'JobID', 'State', 'NCPUS', 'Elapsed', 'CPUTime', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
+    'JobID', 'State', 'NCPUS', 'Elapsed', 'TotalCPU', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
 )
 
 
@@ -102,7 +102,7 @@ def get_jobs_from_string(sacct_output):
             nodes=nodes,
             used_walltime=_seconds(dct['Elapsed']),
             allocated_time_per_core=_seconds(dct['Timelimit']),
-            used_cpu_time=_seconds(dct['CPUTime']),
+            used_cpu_time=_seconds(dct['TotalCPU']),
             allocated_memory=_parse_memory_string(dct['ReqMem'], cores, nodes),
             used_memory=_parse_memory_string(dct_batch['MaxRSS'], cores, nodes)
         )
