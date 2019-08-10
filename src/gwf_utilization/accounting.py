@@ -24,8 +24,30 @@ def _iterpairs(itr):
 def _seconds(time_string):
     """Converts time string on the form DD-HH:MM:SS to seconds"""
 
-    time_regexp = r'(?:([0-9]+)-)?([0-9]{2}):([0-9]{2}):([0-9]{2})'
-    days, hours, minutes, seconds = re.match(time_regexp, time_string).groups()
+    # Remove miliseconds
+    time_string = time_string.split('.')[0]
+
+    if '-' in time_string:
+        days, time_string = time_string.split('-')
+    else:
+        days = None
+
+    parts = time_string.split(':')[::-1]
+
+    try:
+        seconds = parts[0]
+    except IndexError:
+        seconds = 0
+
+    try:
+        minutes = parts[1]
+    except IndexError:
+        minutes = 0
+
+    try:
+        hours = parts[2]
+    except IndexError:
+        hours = 0
 
     result = int(seconds)
     result += SECONDS_PER_MINUTE * int(minutes)
