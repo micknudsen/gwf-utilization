@@ -79,9 +79,10 @@ def _call_sacct_batch(job_ids):
 
 def get_jobs_from_string(sacct_output):
     """Yield jobs given a string of sacct output."""
-    columns, *data = [
-        line.split('|') for i, line in enumerate(sacct_output.splitlines()) if i == 0 or 'COMPLETED' in line
-    ]
+    sacct_output_rows = [line.split('|') for line in sacct_output.splitlines()]
+    columns = sacct_output_rows[0]
+    data = [row for row in sacct_output_rows if 'COMPLETED' in row]
+
     assert tuple(columns) == SLURM_SACCT_COLS
 
     for entry, entry_batch in _iterpairs(data):
