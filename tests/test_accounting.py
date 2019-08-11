@@ -6,10 +6,19 @@ from gwf_utilization.accounting import Job, get_jobs_from_string, _seconds
 class TestAccounting(unittest.TestCase):
 
     def test_seconds(self):
-        self.assertEqual(_seconds('00:05.123'), 5)
+
+        self.assertEqual(_seconds('05'), 5)
+        self.assertEqual(_seconds('05.123'), 5)
+
+        self.assertEqual(_seconds('02:11'), 131)
         self.assertEqual(_seconds('02:11.456'), 131)
+
         self.assertEqual(_seconds('03:12:07'), 11527)
+        self.assertEqual(_seconds('03:12:07.890'), 11527)
+
         self.assertEqual(_seconds('4-07:19:59'), 371999)
+        self.assertEqual(_seconds('4-07:19:59.793'), 371999)
+
 
     def test_job_utilization(self):
         job = Job(
