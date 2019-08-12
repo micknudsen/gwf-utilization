@@ -93,6 +93,8 @@ def _call_sacct(job_id, include_header=False):
 
 
 def _call_sacct_batch(job_ids):
+    if not job_ids:
+        return ''
     result = _call_sacct(job_ids[0], include_header=True)
     for job_id in job_ids[1:]:
         result += _call_sacct(job_id)
@@ -101,6 +103,8 @@ def _call_sacct_batch(job_ids):
 
 def get_jobs_from_string(sacct_output):
     """Yield jobs given a string of sacct output."""
+    if not sacct_output:
+        return iter([])
     sacct_output_rows = [line.split('|') for line in sacct_output.splitlines()]
     columns = sacct_output_rows[0]
     data = [row for row in sacct_output_rows if 'COMPLETED' in row]
