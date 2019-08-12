@@ -22,9 +22,9 @@ def _iterpairs(itr):
 
 
 def _seconds(time_string):
-    """Converts time string on the form DD-HH:MM:SS to seconds"""
+    """Converts time string on the form [[[days-]hours:]minutes:]seconds[.milliseconds] to seconds"""
 
-    # Remove miliseconds
+    # Remove milliseconds
     time_string = time_string.split('.')[0]
 
     if '-' in time_string:
