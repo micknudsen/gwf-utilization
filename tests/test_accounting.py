@@ -1,6 +1,6 @@
 import unittest
 
-from gwf_utilization.accounting import Job, get_jobs_from_string
+from gwf_utilization.accounting import Job, get_jobs, get_jobs_from_string
 
 
 class TestAccounting(unittest.TestCase):
@@ -45,3 +45,6 @@ class TestAccounting(unittest.TestCase):
 
         jobs = list(get_jobs_from_string(output))
         self.assertEqual(len(jobs), 2)
+
+    def test_get_jobs_with_no_job_ids_returns_empty_list(self):
+        self.assertEqual(list(get_jobs(job_ids=[])), [])
