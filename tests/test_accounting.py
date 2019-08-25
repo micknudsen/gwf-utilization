@@ -19,7 +19,6 @@ class TestAccounting(unittest.TestCase):
         self.assertEqual(_seconds('4-07:19:59'), 371999)
         self.assertEqual(_seconds('4-07:19:59.793'), 371999)
 
-
     def test_job_utilization(self):
         job = Job(
             name='foo',
