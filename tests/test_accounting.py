@@ -22,6 +22,7 @@ class TestAccounting(unittest.TestCase):
 
     def test_job_utilization(self):
         job = Job(
+            name='foo',
             cores=1,
             nodes=1,
             used_walltime=12,
@@ -36,6 +37,7 @@ class TestAccounting(unittest.TestCase):
         self.assertEqual(job.memory_utilization, 50)
 
         job = Job(
+            name='bar',
             cores=16,
             nodes=1,
             used_walltime=12,
@@ -51,11 +53,11 @@ class TestAccounting(unittest.TestCase):
 
     def test_get_jobs_from_string(self):
         output = (
-            "JobID|State|NCPUS|Elapsed|TotalCPU|Timelimit|ReqMem|MaxRSS|NNodes\n"
-            "1|COMPLETED|1|00:02:00|00:06:10|06:00:00|8Gn||1\n"
-            "1.batch|COMPLETED|1|00:02:00|00:06:10||8Gn|3324536K|1\n"
-            "2|COMPLETED|4|00:00:10|00:00:30|2-00:00:00|4Gn||2\n"
-            "2.batch|COMPLETED|4|00:00:10|00:00:30||4Gn|115180K|2\n"
+            "JobName|JobID|State|NCPUS|Elapsed|TotalCPU|Timelimit|ReqMem|MaxRSS|NNodes\n"
+            "foo|1|COMPLETED|1|00:02:00|00:06:10|06:00:00|8Gn||1\n"
+            "batch|1.batch|COMPLETED|1|00:02:00|00:06:10||8Gn|3324536K|1\n"
+            "bar|2|COMPLETED|4|00:00:10|00:00:30|2-00:00:00|4Gn||2\n"
+            "batch|2.batch|COMPLETED|4|00:00:10|00:00:30||4Gn|115180K|2\n"
         )
 
         jobs = list(get_jobs_from_string(output))
