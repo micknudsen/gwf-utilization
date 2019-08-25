@@ -12,7 +12,7 @@ EXPONENTS = OrderedDict([
 ])
 
 SLURM_SACCT_COLS = (
-    'JobID', 'State', 'NCPUS', 'Elapsed', 'TotalCPU', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
+    'JobName', 'JobID', 'State', 'NCPUS', 'Elapsed', 'TotalCPU', 'Timelimit', 'ReqMem', 'MaxRSS', 'NNodes'
 )
 
 
@@ -121,6 +121,7 @@ def get_jobs_from_string(sacct_output):
         nodes = int(dct['NNodes'])
 
         yield Job(
+            name=dct['JobName'],
             cores=cores,
             nodes=nodes,
             used_walltime=_seconds(dct['Elapsed']),
@@ -138,6 +139,8 @@ def get_jobs(job_ids):
 class Job:
     """Representation of a job and its used and allocated resources.
 
+    :param name str:
+        Name of the job.
     :param cores int:
         Number of cores allocated on each node.
     :param nodes int:
@@ -154,8 +157,9 @@ class Job:
         Memory used by the job in bytes.
     """
 
-    def __init__(self, cores, nodes, allocated_time_per_core, used_walltime,
-                 used_cpu_time, allocated_memory, used_memory):
+    def __init__(self, name, cores, nodes, allocated_time_per_core,
+                 used_walltime, used_cpu_time, allocated_memory, used_memory):
+        self.name = name
         self.allocated_time_per_core = allocated_time_per_core
         self.used_walltime = used_walltime
         self.allocated_cores = cores * nodes
