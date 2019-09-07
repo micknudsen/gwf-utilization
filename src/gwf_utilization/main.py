@@ -1,5 +1,5 @@
-import click
 import math
+import click
 
 from texttable import Texttable
 
