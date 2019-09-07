@@ -29,7 +29,7 @@ def pretty_size(size_in_bytes):
     exponent = int(math.floor(math.log(size_in_bytes, 1024)))
     multiplier = math.pow(1024, exponent)
     result = round(size_in_bytes / multiplier, 2)
-    return '%s %s' % (result, size_name[exponent])
+    return f'{result} {size_name[exponent]}'
 
 
 @click.command()
