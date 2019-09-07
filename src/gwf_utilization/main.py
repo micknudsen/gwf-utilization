@@ -57,8 +57,6 @@ def utilization(obj, targets):
             except KeyError:
                 pass
 
-    target_column_width = max([len(target.name) for target in matches]) + 1
-
     rows = [['Target', 'Cores', 'Walltime Alloc', 'Walltime Used', 'Memory Alloc', 'Memory Used', 'CPU Time Alloc', 'CPU Time Used', 'Walltime %', 'Memory %', 'CPU %']]
     for job in get_jobs(job_ids):
         rows.append([job.name,
