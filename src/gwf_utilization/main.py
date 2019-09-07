@@ -16,9 +16,9 @@ def pretty_time(time_in_seconds):
     minutes, seconds = divmod(time_in_seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    result = '%02d:%02d:%02d' % (hours, minutes, seconds)
+    result = f'{hours:02d}:{minutes:02d}:{seconds:02d}'
     if days:
-        result = '%d-' % days + result
+        result = f'{days}-{result}'
     return result
 
 
