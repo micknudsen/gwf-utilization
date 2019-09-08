@@ -131,6 +131,7 @@ def get_jobs_from_string(sacct_output):
 
 
 def get_jobs(job_ids):
+    """Returns an iterator of Job objects."""
     sacct_output = _call_sacct_batch(job_ids)
     if not sacct_output:
         return iter([])
