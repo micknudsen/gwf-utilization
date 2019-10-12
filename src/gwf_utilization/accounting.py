@@ -103,8 +103,6 @@ def _call_sacct_batch(job_ids):
 
 def get_jobs_from_string(sacct_output):
     """Yield jobs given a string of sacct output."""
-    if not sacct_output:
-        return iter([])
     sacct_output_rows = [line.split('|') for line in sacct_output.splitlines()]
     columns = sacct_output_rows[0]
     data = [row for row in sacct_output_rows if 'COMPLETED' in row]
@@ -136,7 +134,11 @@ def get_jobs_from_string(sacct_output):
 
 
 def get_jobs(job_ids):
-    return get_jobs_from_string(_call_sacct_batch(job_ids))
+    """Returns an iterator of Job objects."""
+    sacct_output = _call_sacct_batch(job_ids)
+    if not sacct_output:
+        return iter([])
+    return get_jobs_from_string(sacct_output)
 
 
 class Job:
