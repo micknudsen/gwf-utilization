@@ -1,5 +1,5 @@
-import click
 import math
+import click
 
 from texttable import Texttable
 
@@ -16,9 +16,9 @@ def pretty_time(time_in_seconds):
     minutes, seconds = divmod(time_in_seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    result = '%02d:%02d:%02d' % (hours, minutes, seconds)
+    result = f'{hours:02d}:{minutes:02d}:{seconds:02d}'
     if days:
-        result = '%d-' % days + result
+        result = f'{days}-{result}'
     return result
 
 
@@ -29,7 +29,7 @@ def pretty_size(size_in_bytes):
     exponent = int(math.floor(math.log(size_in_bytes, 1024)))
     multiplier = math.pow(1024, exponent)
     result = round(size_in_bytes / multiplier, 2)
-    return '%s %s' % (result, size_name[exponent])
+    return f'{result} {size_name[exponent]}'
 
 
 @click.command()
@@ -56,8 +56,6 @@ def utilization(obj, targets):
                 job_ids.append(backend.get_job_id(target))
             except KeyError:
                 pass
-
-    target_column_width = max([len(target.name) for target in matches]) + 1
 
     rows = [['Target', 'Cores', 'Walltime Alloc', 'Walltime Used', 'Memory Alloc', 'Memory Used', 'CPU Time Alloc', 'CPU Time Used', 'Walltime %', 'Memory %', 'CPU %']]
     for job in get_jobs(job_ids):
