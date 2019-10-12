@@ -114,6 +114,9 @@ def get_jobs_from_string(sacct_output):
     for entry, entry_batch in _iterpairs(data):
         dct = dict(zip(columns, entry))
 
+        if '_' in dct['JobID']:
+            continue
+
         dct_batch = dict(zip(columns, entry_batch))
         assert dct_batch['JobID'] == dct['JobID'] + '.batch'
 
