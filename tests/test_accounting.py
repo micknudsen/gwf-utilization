@@ -55,6 +55,8 @@ class TestAccounting(unittest.TestCase):
             "JobName|JobID|State|NCPUS|Elapsed|TotalCPU|Timelimit|ReqMem|MaxRSS|NNodes\n"
             "foo|1|COMPLETED|1|00:02:00|00:06:10|06:00:00|8Gn||1\n"
             "batch|1.batch|COMPLETED|1|00:02:00|00:06:10||8Gn|3324536K|1\n"
+            "foo|1_1|COMPLETED|1|00:02:00|00:06:10|06:00:00|8Gn||1\n"
+            "batch|1_1.batch|COMPLETED|1|00:02:00|00:06:10||8Gn|3324536K|1\n"
             "bar|2|COMPLETED|4|00:00:10|00:00:30|2-00:00:00|4Gn||2\n"
             "batch|2.batch|COMPLETED|4|00:00:10|00:00:30||4Gn|115180K|2\n"
         )
