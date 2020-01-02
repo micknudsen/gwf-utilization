@@ -1,6 +1,6 @@
 import re
+import subprocess
 from collections import OrderedDict
-from gwf.backends.slurm import _call_generic
 
 
 SECONDS_PER_MINUTE = 60
@@ -78,18 +78,18 @@ def _parse_memory_string(memory_string, cores, nodes):
 
 
 def _call_sacct(job_id, include_header=False):
-    result = _call_generic(
-        'sacct',
-        '--format=' + ','.join(SLURM_SACCT_COLS),
-        '--parsable2',
-        '--jobs', job_id
+    proc = subprocess.Popen(
+        ['sacct','--format=' + ','.join(SLURM_SACCT_COLS), '--parsable2', '--jobs', job_id],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.PIPE,
+        universal_newlines=True,
     )
-
+    stdout, _ = proc.communicate()
     if include_header:
-        return result
-
+        return stdout
     # Skip first line (the header).
-    return '\n'.join(result.split('\n')[1:])
+    return '\n'.join(stdout.split('\n')[1:])
 
 
 def _call_sacct_batch(job_ids):
