@@ -79,7 +79,7 @@ def _parse_memory_string(memory_string, cores, nodes):
 
 def _call_sacct(job_id, include_header=False):
     proc = subprocess.Popen(
-        ['sacct','--format=' + ','.join(SLURM_SACCT_COLS), '--parsable2', '--jobs', job_id],
+        ['sacct', '--format=' + ','.join(SLURM_SACCT_COLS), '--parsable2', '--jobs', job_id],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         stdin=subprocess.PIPE,
