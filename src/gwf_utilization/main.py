@@ -3,11 +3,11 @@ import click
 
 from texttable import Texttable
 
-from gwf.core import graph_from_config
+from gwf.core import Graph
+from gwf.backends import Backend
+from gwf.backends.slurm import SlurmBackend
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
-from gwf.backends import backend_from_config
-from gwf.backends.slurm import SlurmBackend
 
 from gwf_utilization.accounting import get_jobs
 
@@ -37,11 +37,11 @@ def pretty_size(size_in_bytes):
 @click.pass_obj
 def utilization(obj, targets):
     # This plugin only works for SlurmBackend
-    backend_cls = backend_from_config(obj)
+    backend_cls = Backend.from_config(obj)
     if not issubclass(backend_cls, SlurmBackend):
         raise GWFError('Utilization plugin only works for Slurm backend!')
 
-    graph = graph_from_config(obj)
+    graph = Graph.from_config(obj)
 
     # If user specified list of targets, only report utilization for these.
     # Otherwise, report utilization for all targets.
