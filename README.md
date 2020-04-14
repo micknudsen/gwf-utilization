@@ -1,4 +1,4 @@
-[![install with conda](https://anaconda.org/micknudsen/gwf-utilization/badges/version.svg)](https://anaconda.org/micknudsen/snpahoy) ![CI](https://github.com/micknudsen/gwf-utilization/workflows/CI/badge.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/github/micknudsen/gwf-utilization/badge.svg?branch=master)](https://coveralls.io/github/micknudsen/gwf-utilization?branch=master)
+[![install with conda](https://anaconda.org/micknudsen/gwf-utilization/badges/version.svg)](https://anaconda.org/micknudsen/gwf-utilization) ![CI](https://github.com/micknudsen/gwf-utilization/workflows/CI/badge.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/github/micknudsen/gwf-utilization/badge.svg?branch=master)](https://coveralls.io/github/micknudsen/gwf-utilization?branch=master)
 
 # gwf-utilization
 
