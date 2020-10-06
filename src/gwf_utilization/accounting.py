@@ -105,7 +105,7 @@ def get_jobs_from_string(sacct_output):
     """Yield jobs given a string of sacct output."""
     sacct_output_rows = [line.split('|') for line in sacct_output.splitlines()]
     columns = sacct_output_rows[0]
-    data = [row for row in sacct_output_rows if 'COMPLETED' in row]
+    data = [row for row in sacct_output_rows if 'COMPLETED' in row and re.match(r'[0-9]+(\.batch)?$', row[1])]
 
     assert tuple(columns) == SLURM_SACCT_COLS
 
