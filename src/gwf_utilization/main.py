@@ -3,6 +3,7 @@ import click
 
 from texttable import Texttable
 
+from gwf import Workflow
 from gwf.core import Graph
 from gwf.backends import Backend
 from gwf.backends.slurm import SlurmBackend
@@ -41,7 +42,8 @@ def utilization(obj, targets):
     if not issubclass(backend_cls, SlurmBackend):
         raise GWFError('Utilization plugin only works for Slurm backend!')
 
-    graph = Graph.from_config(obj)
+    workflow = Workflow.from_config(obj)
+    graph = Graph.from_targets(workflow.targets)
 
     # If user specified list of targets, only report utilization for these.
     # Otherwise, report utilization for all targets.
