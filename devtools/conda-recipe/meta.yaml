@@ -1,9 +1,9 @@
 package:
   name: gwf-utilization
-  version: '0.1.7'
+  version: '0.2'
 
 source:
-  git_rev: v0.1.7
+  git_rev: v0.2
   git_url: git@github.com:micknudsen/gwf-utilization.git
 
 build:
@@ -17,7 +17,7 @@ requirements:
     - python >=3.7
   run:
     - click
-    - gwf >=1.7.1
+    - gwf >=2
     - python >=3.7
     - texttable >=1.4.0
 
