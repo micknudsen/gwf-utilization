@@ -8,7 +8,7 @@ setup(
     test_suite="tests",
     entry_points={"gwf.plugins": ["utilization = gwf_utilization.main:utilization"]},
     python_requires=">=3.7",
-    install_requires=["click", "gwf>=2", "texttable>=1.4.0"],
+    install_requires=["click", "texttable>=1.4.0"],
     author="Michael Knudsen",
     author_email="michaelk@clin.au.dk",
     license="MIT",
