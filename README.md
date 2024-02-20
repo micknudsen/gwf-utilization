@@ -2,7 +2,7 @@
 
 # gwf-utilization
 
-This is a [gwf](http://gwf.readthedocs.io/en/latest/) plugin for providing information about how well allocated resources have been used. Note that only the _Slurm_ backend is supported.
+This is a [gwf](https://gwf.app) plugin for providing information about how well allocated resources have been used. Note that only the _Slurm_ backend is supported.
 
 
 ```
