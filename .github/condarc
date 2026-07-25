@@ -1,0 +1,2 @@
+plugins:
+  conda_pypi_pip_warning: false

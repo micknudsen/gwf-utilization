@@ -50,7 +50,9 @@ jobs:
           auto-update-conda: true
           activate-environment: gwf-utilization-build
           environment-file: environment.yml
-          channels: gwforg,conda-forge,bioconda,defaults
+          condarc-file: .github/condarc
+          channels: gwforg,conda-forge,bioconda
+          conda-remove-defaults: true
           channel-priority: strict
           use-mamba: true
 
@@ -118,6 +120,8 @@ jobs:
           auto-update-conda: true
           activate-environment: gwf-utilization-publish
           python-version: "3.12"
+          condarc-file: .github/condarc
+          conda-remove-defaults: true
 
       - name: Install upload tooling
         shell: bash -l {0}
