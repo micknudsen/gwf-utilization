@@ -1,0 +1,137 @@
+name: Publish Conda Package
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    name: Run Pytest Release Gate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+
+      - name: Run tests
+        run: pytest
+
+  build-and-test:
+    name: Build And Test Conda Package
+    runs-on: ubuntu-latest
+
+    env:
+      CHANNEL: micknudsen
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          auto-update-conda: true
+          activate-environment: gwf-utilization-build
+          environment-file: environment.yml
+          channels: gwforg,conda-forge,bioconda,defaults
+          channel-priority: strict
+          use-mamba: true
+
+      - name: Install conda-build
+        shell: bash -l {0}
+        run: |
+          conda install -n base -y -c conda-forge conda-build
+
+      - name: Build package
+        shell: bash -l {0}
+        run: |
+          conda build conda-recipe/
+
+      - name: Locate built package
+        id: locate
+        shell: bash -l {0}
+        run: |
+          PKG_PATH="$(conda build conda-recipe/ --output)"
+          if [ -z "$PKG_PATH" ]; then
+            echo "No conda package path reported by conda build"
+            exit 1
+          fi
+          if [ ! -f "$PKG_PATH" ]; then
+            echo "Reported package path does not exist: $PKG_PATH"
+            exit 1
+          fi
+          echo "pkg_path=${PKG_PATH}" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke test built package
+        shell: bash -l {0}
+        run: |
+          conda build --test "${{ steps.locate.outputs.pkg_path }}"
+
+      - name: Upload conda artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: conda-package
+          path: ${{ steps.locate.outputs.pkg_path }}
+
+  publish-conda:
+    name: Publish To Anaconda Channel
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs:
+      - pytest
+      - build-and-test
+
+    env:
+      CHANNEL: micknudsen
+
+    environment:
+      name: conda
+      url: https://anaconda.org/micknudsen/gwf-utilization
+
+    steps:
+      - name: Download conda artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: conda-package
+          path: dist
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          auto-update-conda: true
+          activate-environment: gwf-utilization-publish
+          python-version: "3.12"
+
+      - name: Install upload tooling
+        shell: bash -l {0}
+        run: |
+          conda install -y -c defaults anaconda-client
+
+      - name: Publish package to micknudsen channel
+        shell: bash -l {0}
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
+        run: |
+          PKG_PATH=$(find dist -type f \( -name "*.conda" -o -name "*.tar.bz2" \) | head -n 1)
+          if [ -z "$PKG_PATH" ]; then
+            echo "No conda package found to upload"
+            exit 1
+          fi
+          anaconda -t "$ANACONDA_API_TOKEN" upload --user "$CHANNEL" "$PKG_PATH"

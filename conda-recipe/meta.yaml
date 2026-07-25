@@ -1,0 +1,38 @@
+{% set name = "gwf-utilization" %}
+{% set version = "1.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python >=3.10
+    - pip
+    - setuptools >=77
+    - wheel
+  run:
+    - python >=3.10
+    - click
+    - gwf >=2
+    - texttable >=1.4.0
+
+test:
+  imports:
+    - gwf_utilization
+    - gwf_utilization.accounting
+    - gwf_utilization.main
+
+about:
+  home: https://github.com/micknudsen/gwf-utilization
+  summary: Report utilization of allocated resources in a gwf workflow
+  license: MIT
+  license_file: LICENSE

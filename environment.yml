@@ -1,0 +1,11 @@
+name: gwf-utilization-dev
+channels:
+  - gwforg
+  - conda-forge
+dependencies:
+  - python >=3.10
+  - pip
+  - conda-build
+  - pytest
+  - pip:
+      - -e .

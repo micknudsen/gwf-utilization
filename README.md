@@ -1,6 +1,6 @@
-[![install with conda](https://anaconda.org/micknudsen/gwf-utilization/badges/version.svg)](https://anaconda.org/micknudsen/gwf-utilization) ![CI](https://github.com/micknudsen/gwf-utilization/workflows/CI/badge.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/github/micknudsen/gwf-utilization/badge.svg?branch=master)](https://coveralls.io/github/micknudsen/gwf-utilization?branch=master)
-
 # gwf-utilization
+
+[![Conda Version](https://img.shields.io/conda/vn/micknudsen/gwf-utilization?cacheSeconds=300)](https://anaconda.org/micknudsen/gwf-utilization) [![Conda Downloads](https://img.shields.io/conda/dn/micknudsen/gwf-utilization?cacheSeconds=300)](https://anaconda.org/micknudsen/gwf-utilization)
 
 This is a [gwf](https://gwf.app) plugin for providing information about how well allocated resources have been used. Note that only the _Slurm_ backend is supported.
 
@@ -20,8 +20,8 @@ $ gwf utilization
 +---------------------------------------+-------+----------------+---------------+--------------+-------------+----------------+---------------+------------+----------+-------+
 ```
 
-The simplest way to install `gwf-utilization` is by using conda:
+The recommended way to install **gwf-utilization** is via [conda](https://docs.conda.io/), using the `micknudsen` channel:
 
-```
-$ conda install -c micknudsen gwf-utilization
+```bash
+conda install -c gwforg micknudsen::gwf-utilization
 ```
