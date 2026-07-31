@@ -26,6 +26,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: gwforg,conda-forge
           activate-environment: gwf-utilization-test
+          condarc-file: .github/condarc
           conda-remove-defaults: true
           channel-priority: strict
 
