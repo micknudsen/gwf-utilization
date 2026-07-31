@@ -1,74 +1,79 @@
-import math
-import click
-import os.path
+"""The ``gwf utilization`` command."""
+
+from __future__ import annotations
+
 import json
+import math
+from pathlib import Path
+from typing import Any
 
-from texttable import Texttable
-
+import click
 from gwf import Workflow
 from gwf.core import CachedFilesystem, Graph, pass_context
 from gwf.exceptions import GWFError
 from gwf.filtering import filter_names
+from texttable import Texttable
 
 from gwf_utilization.accounting import get_jobs
 
 
-def pretty_time(time_in_seconds):
+def pretty_time(time_in_seconds: int) -> str:
+    """Format a duration in Slurm's human-readable time format."""
     minutes, seconds = divmod(time_in_seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     result = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-    if days:
-        result = f"{days}-{result}"
-    return result
+    return f"{days}-{result}" if days else result
 
 
-def pretty_size(size_in_bytes):
+def pretty_size(size_in_bytes: int) -> str:
+    """Format a byte count using binary (1024-based) units."""
     if size_in_bytes == 0:
         return "0 B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB")
-    exponent = int(math.floor(math.log(size_in_bytes, 1024)))
-    multiplier = math.pow(1024, exponent)
-    result = round(size_in_bytes / multiplier, 2)
-    return f"{result} {size_name[exponent]}"
+
+    units = ("B", "KB", "MB", "GB", "TB", "PB")
+    exponent = min(int(math.log(size_in_bytes, 1024)), len(units) - 1)
+    value = round(size_in_bytes / 1024**exponent, 2)
+    return f"{value} {units[exponent]}"
 
 
-def load_tracked_jobs(working_dir):
+def load_tracked_jobs(working_dir: str | Path) -> dict[str, str]:
+    """Load the Slurm job IDs that gwf tracks in a working directory."""
+    path = Path(working_dir) / ".gwf" / "slurm-backend-tracked.json"
     try:
-        with open(
-            os.path.join(working_dir, ".gwf", "slurm-backend-tracked.json")
-        ) as state_file:
-            return json.load(state_file)
+        with path.open(encoding="utf-8") as state_file:
+            data: Any = json.load(state_file)
     except FileNotFoundError:
         return {}
+
+    if not isinstance(data, dict) or not all(
+        isinstance(name, str) and isinstance(job_id, str)
+        for name, job_id in data.items()
+    ):
+        raise GWFError(f"Invalid tracked-job state file: {path}")
+    return data
 
 
 @click.command()
 @click.argument("targets", nargs=-1)
 @pass_context
-def utilization(ctx, targets):
-    # This plugin only works for the slurm backend.
+def utilization(ctx: Any, targets: tuple[str, ...]) -> None:
+    """Report allocated and used Slurm resources for workflow TARGETS."""
     if ctx.backend != "slurm":
         raise GWFError("Utilization plugin only works for Slurm backend!")
 
     workflow = Workflow.from_context(ctx)
     graph = Graph.from_targets(workflow.targets, fs=CachedFilesystem())
-
-    # If user specified list of targets, only report utilization for these.
-    # Otherwise, report utilization for all targets.
     matches = graph.targets.values()
     if targets:
         matches = filter_names(matches, targets)
 
     tracked_jobs = load_tracked_jobs(ctx.working_dir)
     job_ids = [
-        tracked_jobs[target.name]
-        for target in matches
-        if tracked_jobs.get(target.name) is not None
+        tracked_jobs[target.name] for target in matches if target.name in tracked_jobs
     ]
-
-    rows = [
-        [
+    rows: list[tuple[str, ...]] = [
+        (
             "Target",
             "Cores",
             "Walltime Alloc",
@@ -80,36 +85,30 @@ def utilization(ctx, targets):
             "Walltime %",
             "Memory %",
             "CPU %",
-        ]
-    ]
-    for job in get_jobs(job_ids):
-        rows.append(
-            (
-                job.name,
-                job.allocated_cores,
-                pretty_time(job.allocated_time_per_core),
-                pretty_time(job.used_walltime),
-                pretty_size(job.allocated_memory),
-                pretty_size(job.used_memory),
-                pretty_time(job.allocated_cpu_time),
-                pretty_time(job.used_cpu_time),
-                str(format(job.walltime_utilization, ".1f")),
-                format(job.memory_utilization, ".1f"),
-                format(job.cpu_utilization, ".1f"),
-            )
         )
+    ]
+    rows.extend(
+        (
+            job.name,
+            str(job.allocated_cores),
+            pretty_time(job.allocated_time_per_core),
+            pretty_time(job.used_walltime),
+            pretty_size(job.allocated_memory),
+            pretty_size(job.used_memory),
+            pretty_time(job.allocated_cpu_time),
+            pretty_time(job.used_cpu_time),
+            f"{job.walltime_utilization:.1f}",
+            f"{job.memory_utilization:.1f}",
+            f"{job.cpu_utilization:.1f}",
+        )
+        for job in get_jobs(job_ids)
+    )
 
     table = Texttable()
-
     table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
-
-    ncols = len(rows[0])
-
     table.set_max_width(0)
-    table.set_header_align("l" * ncols)
-    table.set_cols_align(["l"] + (ncols - 1) * ["r"])
-    table.set_cols_dtype(["t"] * ncols)
-
+    table.set_header_align("l" * len(rows[0]))
+    table.set_cols_align(["l", *("r" for _ in rows[0][1:])])
+    table.set_cols_dtype(["t"] * len(rows[0]))
     table.add_rows(rows)
-
-    print(table.draw())
+    click.echo(table.draw())

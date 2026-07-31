@@ -5,10 +5,9 @@ Usage:
     python tools/set_version.py 0.2.1
 """
 
-from pathlib import Path
 import re
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION_PATTERN = re.compile(r"^\d+\.\d+\.\d+(?:[a-zA-Z0-9_.+-]*)?$")

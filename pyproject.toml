@@ -22,13 +22,15 @@ classifiers = [
   "Intended Audience :: Science/Research",
 ]
 dependencies = [
-  "click",
+  "click>=8.1",
+  "gwf>=2",
   "texttable>=1.4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
+  "ruff>=0.12",
 ]
 
 [project.entry-points."gwf.plugins"]
@@ -43,3 +45,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
