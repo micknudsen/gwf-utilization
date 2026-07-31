@@ -128,6 +128,7 @@ jobs:
           auto-update-conda: true
           activate-environment: gwf-utilization-publish
           python-version: "3.12"
+          channels: defaults
           conda-remove-defaults: true
 
       - name: Install upload tooling
