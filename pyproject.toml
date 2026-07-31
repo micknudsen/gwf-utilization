@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gwf-utilization"
-version = "1.0.0"
+version = "1.0.1"
 description = "Report utilization of allocated resources in a gwf workflow."
 readme = "README.md"
 requires-python = ">=3.10"
