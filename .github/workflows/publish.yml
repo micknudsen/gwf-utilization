@@ -11,7 +11,7 @@ jobs:
     name: Run Pytest Release Gate
     runs-on: ubuntu-latest
     env:
-      CONDA_NO_PLUGINS: "true"
+      CONDA_PLUGINS_CONDA_PYPI_PIP_WARNING: "false"
     strategy:
       fail-fast: false
       matrix:
@@ -29,7 +29,6 @@ jobs:
           activate-environment: gwf-utilization-test
           conda-remove-defaults: true
           channel-priority: strict
-          conda-solver: classic
 
       - name: Install gwf and test dependencies
         shell: bash -l {0}
@@ -47,7 +46,7 @@ jobs:
 
     env:
       CHANNEL: micknudsen
-      CONDA_NO_PLUGINS: "true"
+      CONDA_PLUGINS_CONDA_PYPI_PIP_WARNING: "false"
 
     steps:
       - name: Check out repository
@@ -63,7 +62,6 @@ jobs:
           conda-remove-defaults: true
           channel-priority: strict
           use-mamba: true
-          conda-solver: classic
 
       - name: Install conda-build
         shell: bash -l {0}
@@ -111,7 +109,7 @@ jobs:
 
     env:
       CHANNEL: micknudsen
-      CONDA_NO_PLUGINS: "true"
+      CONDA_PLUGINS_CONDA_PYPI_PIP_WARNING: "false"
 
     environment:
       name: conda
@@ -131,7 +129,6 @@ jobs:
           activate-environment: gwf-utilization-publish
           python-version: "3.12"
           conda-remove-defaults: true
-          conda-solver: classic
 
       - name: Install upload tooling
         shell: bash -l {0}
