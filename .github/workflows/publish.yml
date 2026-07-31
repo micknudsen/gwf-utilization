@@ -25,13 +25,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: gwforg,conda-forge
           activate-environment: gwf-utilization-test
-          condarc-file: .github/condarc
           conda-remove-defaults: true
           channel-priority: strict
 
       - name: Install gwf and test dependencies
         shell: bash -l {0}
         run: |
+          conda config --set plugins.conda_pypi_pip_warning false
           conda install -y "gwf>=2"
           python -m pip install -e .[dev]
 
