@@ -11,6 +11,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      CONDA_NO_PLUGINS: "true"
     strategy:
       fail-fast: false
       matrix:
@@ -26,7 +28,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: gwforg,conda-forge
           activate-environment: gwf-utilization-test
-          condarc-file: .github/condarc
           conda-remove-defaults: true
           channel-priority: strict
 

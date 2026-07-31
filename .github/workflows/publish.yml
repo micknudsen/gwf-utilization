@@ -10,6 +10,8 @@ jobs:
   pytest:
     name: Run Pytest Release Gate
     runs-on: ubuntu-latest
+    env:
+      CONDA_NO_PLUGINS: "true"
     strategy:
       fail-fast: false
       matrix:
@@ -25,7 +27,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: gwforg,conda-forge
           activate-environment: gwf-utilization-test
-          condarc-file: .github/condarc
           conda-remove-defaults: true
           channel-priority: strict
 
@@ -45,6 +46,7 @@ jobs:
 
     env:
       CHANNEL: micknudsen
+      CONDA_NO_PLUGINS: "true"
 
     steps:
       - name: Check out repository
@@ -56,7 +58,6 @@ jobs:
           auto-update-conda: true
           activate-environment: gwf-utilization-build
           environment-file: environment.yml
-          condarc-file: .github/condarc
           channels: gwforg,conda-forge,bioconda
           conda-remove-defaults: true
           channel-priority: strict
@@ -108,15 +109,13 @@ jobs:
 
     env:
       CHANNEL: micknudsen
+      CONDA_NO_PLUGINS: "true"
 
     environment:
       name: conda
       url: https://anaconda.org/micknudsen/gwf-utilization
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-
       - name: Download conda artifact
         uses: actions/download-artifact@v8
         with:
@@ -129,7 +128,6 @@ jobs:
           auto-update-conda: true
           activate-environment: gwf-utilization-publish
           python-version: "3.12"
-          condarc-file: .github/condarc
           conda-remove-defaults: true
 
       - name: Install upload tooling
