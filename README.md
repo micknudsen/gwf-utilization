@@ -25,15 +25,3 @@ The recommended way to install **gwf-utilization** is via [conda](https://docs.c
 ```bash
 conda install -c gwforg micknudsen::gwf-utilization
 ```
-
-## Development
-
-Create an environment with Python 3.10 or newer, install the package with its
-development dependencies, and run the same checks as continuous integration:
-
-```bash
-python -m pip install -e '.[dev]'
-ruff check .
-ruff format --check .
-pytest
-```
