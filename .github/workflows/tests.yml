@@ -30,6 +30,7 @@ jobs:
           activate-environment: gwf-utilization-test
           conda-remove-defaults: true
           channel-priority: strict
+          conda-solver: classic
 
       - name: Install gwf and test dependencies
         shell: bash -l {0}
